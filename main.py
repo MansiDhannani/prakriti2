@@ -1,6 +1,8 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import json
 import pandas as pd
@@ -18,10 +20,32 @@ Base.metadata.create_all(bind=engine)
 
 load_dotenv()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Pre-load RAG index on startup
+    try:
+        from app.services.rag_service import get_store
+        store = get_store()
+        print(f"✅ RAG index ready: {store.count()} documents")
+    except Exception as e:
+        print(f"⚠ RAG index failed to load: {e}")
+    yield
+
 app = FastAPI(
-    title="EcoValue India API",
+    title="EcoValue India",
+    description="Ecosystem Services Valuation Engine for India.",
     version="2.0.0",
-    docs_url="/docs"
+    docs_url="/docs",
+    lifespan=lifespan
+)
+
+# Enable CORS for frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Dependency for DB session
