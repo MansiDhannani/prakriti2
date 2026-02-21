@@ -12,7 +12,7 @@ load_dotenv()
 
 app = FastAPI(title="PrakritiROI API")
 api_key = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=api_key) if api_key and api_key != "your_key_here" else None
+client = Groq(api_key=api_key) if api_key else None
 
 # Mount static files (your CSS, JS files)
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -31,6 +31,12 @@ class ROIRequest(BaseModel):
     ecosystem_type: str
     area_ha: float
     region: str
+
+class AISummaryRequest(BaseModel):
+    ecosystem: str
+    region: str
+    area_ha: float
+    npv_10yr: float
 
 @app.get("/")
 async def serve_frontend():
@@ -93,12 +99,12 @@ def calculate_roi(request: ROIRequest):
     }
 
 @app.post("/ai_summary")
-def get_ai_summary(data: dict):
+def get_ai_summary(request: AISummaryRequest):
     """Generates an ecological investment thesis using Claude."""
     if not client:
         return {"summary": "AI Insights unavailable: Please configure a valid GROQ_API_KEY."}
 
-    prompt = f"As an ESG analyst, provide a 3-sentence investment thesis for a {data['ecosystem']} project in {data['region']} covering {data['area_ha']} hectares with an NPV of ₹{data['npv_10yr']:,.0f}."
+    prompt = f"As an ESG analyst, provide a 3-sentence investment thesis for a {request.ecosystem} project in {request.region} covering {request.area_ha} hectares with an NPV of ₹{request.npv_10yr:,.0f}."
     
     try:
         completion = client.chat.completions.create(
