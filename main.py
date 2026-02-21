@@ -57,7 +57,8 @@ def get_db():
         db.close()
 
 # Mount static files (your CSS, JS files)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Load data
 DATA_PATH = "india_ecosystem_coefficients.json"
@@ -70,8 +71,8 @@ else:
     df_parcels = pd.DataFrame()
 
 @app.get("/")
-async def serve_frontend():
-    return FileResponse("index.html")
+async def root():
+    return {"message": "Welcome to EcoValue India API v2.0.0"}
 
 @app.get("/health")
 def health_check():

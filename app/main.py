@@ -54,7 +54,8 @@ app.add_middleware(
 )
 
 # Mount static files so the browser can fetch your CSS and JS
-app.mount("/static", StaticFiles(directory="static"), name="static")
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(health.router,      tags=["Health"])
 app.include_router(valuation.router,   prefix="/api/v1", tags=["Valuation"])
@@ -65,10 +66,8 @@ app.include_router(live.router,        prefix="/api/v1", tags=["Live & Impact"])
 
 
 @app.get("/")
-async def serve_root():
-    """Serve the landing page at the root URL"""
-    html_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "index.html")
-    return FileResponse(html_path, media_type="text/html")
+async def root():
+    return {"message": "Welcome to EcoValue India API v2.0.0"}
 
 
 # ── RAG admin endpoints ───────────────────────────────────────────────────────
