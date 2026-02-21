@@ -1,18 +1,36 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from fastapi.responses import FileResponse, Response
+from sqlalchemy.orm import Session
 import json
 import pandas as pd
-from groq import Groq
 from dotenv import load_dotenv
 import os
 
+# Import Version 2.0.0 Services
+from app.services import valuation_engine, narrative_service, pdf_service, db_service, rag_service
+from app.models.schemas import ValuationRequest, ScenarioCompareRequest, AISummaryRequest
+from app.models.database import SessionLocal, engine, Base
+from live import router as live_router
+
+# Initialize Database
+Base.metadata.create_all(bind=engine)
+
 load_dotenv()
 
-app = FastAPI(title="PrakritiROI API")
-api_key = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=api_key) if api_key else None
+app = FastAPI(
+    title="EcoValue India API",
+    version="2.0.0",
+    docs_url="/docs"
+)
+
+# Dependency for DB session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # Mount static files (your CSS, JS files)
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -21,102 +39,95 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 DATA_PATH = "india_ecosystem_coefficients.json"
 CSV_PATH = "PrakritiROI_Synthetic_Dataset_2000 (1).csv"
 
-with open(DATA_PATH, "r") as f:
-    ecosystem_data = json.load(f)
-
 # Load synthetic dataset for parcel lookups
-df_parcels = pd.read_csv(CSV_PATH)
-
-class ROIRequest(BaseModel):
-    ecosystem_type: str
-    area_ha: float
-    region: str
-
-class AISummaryRequest(BaseModel):
-    ecosystem: str
-    region: str
-    area_ha: float
-    npv_10yr: float
+if os.path.exists(CSV_PATH):
+    df_parcels = pd.read_csv(CSV_PATH)
+else:
+    df_parcels = pd.DataFrame()
 
 @app.get("/")
 async def serve_frontend():
     return FileResponse("index.html")
 
-@app.get("/ecosystems")
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "version": "2.0.0"}
+
+# --- API V1 Endpoints ---
+
+@app.get("/api/v1/ecosystems")
 def get_ecosystems():
-    return ecosystem_data["ecosystems"]
+    from app.data.coefficients import ECOSYSTEMS
+    return ECOSYSTEMS
 
-@app.get("/regions")
-def get_regions():
-    return ecosystem_data["regional_multipliers"]
+@app.post("/api/v1/valuate")
+def valuate(request: ValuationRequest, db: Session = Depends(get_db)):
+    result = valuation_engine.compute_valuation(request)
+    db_service.save_valuation(db, result.dict(), request.dict())
+    return result
 
-@app.get("/parcels")
+@app.post("/api/v1/scenarios/compare")
+def compare_scenarios(request: ScenarioCompareRequest):
+    return valuation_engine.compute_scenario_comparison(request)
+
+@app.post("/api/v1/report/narrative")
+def generate_narrative(request: dict):
+    # Expects {"valuation_result": {...}, "location_name": "..."}
+    return narrative_service.generate_narrative(
+        valuation_result=request.get("valuation_result"),
+        location_name=request.get("location_name")
+    )
+
+@app.post("/api/v1/report/pdf")
+def generate_pdf_report(request: dict):
+    pdf_bytes, filename = pdf_service.generate_pdf(
+        valuation_result=request.get("valuation_result"),
+        narrative=request.get("narrative"),
+        location_name=request.get("location_name")
+    )
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@app.get("/api/v1/history")
+def get_history(db: Session = Depends(get_db)):
+    return {"valuations": db_service.list_valuations(db)}
+
+@app.get("/api/v1/analytics")
+def get_analytics(db: Session = Depends(get_db)):
+    return db_service.get_analytics(db)
+
+@app.post("/api/v1/impact")
+def get_impact(valuation_result: dict):
+    from app.services.impact_service import calculate_impact
+    return calculate_impact(
+        ecosystem_type=valuation_result.get("ecosystem_type"),
+        area_hectares=valuation_result.get("area_hectares"),
+        annual_value_inr=valuation_result.get("annual_value_mid"),
+        carbon_tonnes_yr=valuation_result.get("carbon_annual_tonnes"),
+        biodiversity_index=valuation_result.get("biodiversity_index"),
+        climate_score=valuation_result.get("climate_resilience_score"),
+        services=valuation_result.get("services")
+    )
+
+@app.get("/api/v1/rag/search")
+def rag_search(q: str = Query(..., description="Search query for ecosystem data")):
+    return {"context": rag_service.retrieve_context(q)}
+
+@app.post("/api/v1/rag/rebuild")
+def rag_rebuild():
+    store = rag_service.get_store()
+    count = rag_service.build_index(store)
+    return {"status": "success", "documents_indexed": count}
+
+# Include WebSocket Ticker
+app.include_router(live_router, prefix="/api/v1")
+
+@app.get("/api/v1/parcels")
 def list_parcels():
     return df_parcels[["Parcel_ID", "State", "Land_Use_Type"]].to_dict(orient="records")
-
-@app.get("/parcel/{parcel_id}")
-def get_parcel(parcel_id: int):
-    result = df_parcels[df_parcels["Parcel_ID"] == parcel_id]
-    if result.empty:
-        raise HTTPException(status_code=404, detail="Parcel not found")
-    return result.iloc[0].to_dict()
-
-@app.post("/calculate_roi")
-def calculate_roi(request: ROIRequest):
-    eco = ecosystem_data["ecosystems"].get(request.ecosystem_type)
-    multiplier = ecosystem_data["regional_multipliers"].get(request.region)
-    
-    if not eco or not multiplier:
-        raise HTTPException(status_code=404, detail="Ecosystem or Region not found")
-
-    results = []
-    total_annual_value = 0
-    
-    for service_name, service_data in eco["services"].items():
-        # Handle different key names for midpoint
-        mid_val = service_data.get("value_midpoint", service_data.get("mid", 0))
-        adjusted_val = mid_val * multiplier
-        total_service_val = adjusted_val * request.area_ha
-        
-        results.append({
-            "service": service_name.replace("_", " ").title(),
-            "value_per_ha": adjusted_val,
-            "total_value": total_service_val
-        })
-        total_annual_value += total_service_val
-
-    # 10-Year NPV Calculation (8% discount rate as per JSON notes)
-    pv_factor = 6.71 
-    npv_10yr = total_annual_value * pv_factor
-
-    return {
-        "ecosystem": eco["name"],
-        "region": request.region.replace("_", " ").title(),
-        "area_ha": request.area_ha,
-        "total_annual_value": total_annual_value,
-        "npv_10yr": npv_10yr,
-        "breakdown": results
-    }
-
-@app.post("/ai_summary")
-def get_ai_summary(request: AISummaryRequest):
-    """Generates an ecological investment thesis using Claude."""
-    if not client:
-        return {"summary": "AI Insights unavailable: Please configure a valid GROQ_API_KEY."}
-
-    prompt = f"As an ESG analyst, provide a 3-sentence investment thesis for a {request.ecosystem} project in {request.region} covering {request.area_ha} hectares with an NPV of ₹{request.npv_10yr:,.0f}."
-    
-    try:
-        completion = client.chat.completions.create(
-            model="llama3-70b-8192",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=150,
-            temperature=0.7
-        )
-        return {"summary": completion.choices[0].message.content}
-    except Exception as e:
-        print(f"❌ Groq API Error: {e}")
-        return {"summary": "AI Insights currently unavailable. Please check your API key."}
 
 if __name__ == "__main__":
     import uvicorn
