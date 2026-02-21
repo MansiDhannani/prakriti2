@@ -60,26 +60,10 @@ app.include_router(live.router,        prefix="/api/v1", tags=["Live & Impact"])
 
 
 @app.get("/")
-def root():
-    return {
-        "name":    "EcoValue India API",
-        "version": "2.0.0",
-        "docs":    "/docs",
-        "endpoints": {
-            "health":       "GET  /health",
-            "ecosystems":   "GET  /api/v1/ecosystems",
-            "valuate":      "POST /api/v1/valuate",
-            "compare":      "POST /api/v1/scenarios/compare",
-            "narrative":    "POST /api/v1/report/narrative   ← RAG + Groq AI",
-            "pdf":          "POST /api/v1/report/pdf",
-            "history":      "GET  /api/v1/history",
-            "analytics":    "GET  /api/v1/analytics",
-            "impact":       "POST /api/v1/impact",
-            "ticker_ws":    "WS   /api/v1/ws/ticker",
-            "rag_search":   "GET  /api/v1/rag/search?q=wetland+flood+control",
-            "rag_rebuild":  "POST /api/v1/rag/rebuild",
-        }
-    }
+async def serve_root():
+    """Serve the landing page at the root URL"""
+    html_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "index.html")
+    return FileResponse(html_path, media_type="text/html")
 
 
 # ── RAG admin endpoints ───────────────────────────────────────────────────────
