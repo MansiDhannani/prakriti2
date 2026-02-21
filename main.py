@@ -11,7 +11,7 @@ import os
 
 # Import Version 2.0.0 Services
 from app.services import valuation_engine, narrative_service, pdf_service, db_service, rag_service
-from app.models.schemas import ValuationRequest, ScenarioCompareRequest, AISummaryRequest
+from app.models.schemas import ValuationRequest, ScenarioCompareRequest
 from app.models.database import SessionLocal, engine, Base
 from live import router as live_router
 
