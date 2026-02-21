@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoValue India API - Test Console</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .endpoint {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .endpoint h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .endpoint button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .endpoint button:hover {
+            background: #764ba2;
+        }
+        .response {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .status-success {
+            color: #22c55e;
+        }
+        .status-error {
+            color: #ef4444;
+        }
+        .loading {
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌳 EcoValue India API - Test Console</h1>
+        <p>Live at: <strong>https://prakriti2-1.onrender.com</strong></p>
+        <p>Interactive Docs: <a href="https://prakriti2-1.onrender.com/docs" target="_blank" style="color: white; text-decoration: underline;">https://prakriti2-1.onrender.com/docs</a></p>
+    </div>
+
+    <div class="container">
+        <!-- Health Check -->
+        <div class="endpoint">
+            <h3>✅ Health Check</h3>
+            <p>Verify API is running</p>
+            <button onclick="testHealth()">Test Health</button>
+            <div id="health-response" class="response"></div>
+        </div>
+
+        <!-- Get Ecosystems -->
+        <div class="endpoint">
+            <h3>🌍 Get Ecosystems</h3>
+            <p>List all available ecosystem types</p>
+            <button onclick="getEcosystems()">Get Ecosystems</button>
+            <div id="ecosystems-response" class="response"></div>
+        </div>
+
+        <!-- Valuate Ecosystem -->
+        <div class="endpoint">
+            <h3>💰 Valuate Ecosystem</h3>
+            <p>Calculate ecosystem services value</p>
+            <button onclick="valuateEcosystem()">Valuate (Wetlands)</button>
+            <div id="valuate-response" class="response"></div>
+        </div>
+
+        <!-- Compare Scenarios -->
+        <div class="endpoint">
+            <h3>⚖️ Compare Scenarios</h3>
+            <p>Compare different land use scenarios</p>
+            <button onclick="compareScenarios()">Compare Scenarios</button>
+            <div id="compare-response" class="response"></div>
+        </div>
+
+        <!-- Generate Narrative (requires GROQ_API_KEY) -->
+        <div class="endpoint">
+            <h3>📝 Generate Narrative</h3>
+            <p>AI-powered policy narrative (needs GROQ_API_KEY)</p>
+            <button onclick="generateNarrative()">Generate Narrative</button>
+            <div id="narrative-response" class="response"></div>
+        </div>
+
+        <!-- Calculate Impact -->
+        <div class="endpoint">
+            <h3>📊 Calculate Impact</h3>
+            <p>Ecosystem impact metrics</p>
+            <button onclick="calculateImpact()">Calculate Impact</button>
+            <div id="impact-response" class="response"></div>
+        </div>
+
+        <!-- RAG Search -->
+        <div class="endpoint">
+            <h3>🔍 RAG Search</h3>
+            <p>Search knowledge base</p>
+            <button onclick="ragSearch()">Search RAG Index</button>
+            <div id="rag-response" class="response"></div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="endpoint">
+            <h3>📈 Get Analytics</h3>
+            <p>Historical analytics data</p>
+            <button onclick="getAnalytics()">Get Analytics</button>
+            <div id="analytics-response" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = "https://prakriti2-1.onrender.com";
+
+        function displayResponse(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            const className = isError ? 'status-error' : 'status-success';
+            element.innerHTML = `<span class="${className}">${JSON.stringify(data, null, 2)}</span>`;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<span class="loading">Loading...</span>';
+        }
+
+        async function testHealth() {
+            showLoading('health-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                displayResponse('health-response', data);
+            } catch (error) {
+                displayResponse('health-response', { error: error.message }, true);
+            }
+        }
+
+        async function getEcosystems() {
+            showLoading('ecosystems-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/ecosystems`);
+                const data = await response.json();
+                displayResponse('ecosystems-response', data);
+            } catch (error) {
+                displayResponse('ecosystems-response', { error: error.message }, true);
+            }
+        }
+
+        async function valuateEcosystem() {
+            showLoading('valuate-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/valuate`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        ecosystem_type: "wetlands_inland",
+                        area_hectares: 100,
+                        region: "indo_gangetic_plain"
+                    })
+                });
+                const data = await response.json();
+                displayResponse('valuate-response', data);
+            } catch (error) {
+                displayResponse('valuate-response', { error: error.message }, true);
+            }
+        }
+
+        async function compareScenarios() {
+            showLoading('compare-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/scenarios/compare`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        area_hectares: 100,
+                        region: "indo_gangetic_plain",
+                        scenarios: ["wetlands_inland", "forest_dry"]
+                    })
+                });
+                const data = await response.json();
+                displayResponse('compare-response', data);
+            } catch (error) {
+                displayResponse('compare-response', { error: error.message }, true);
+            }
+        }
+
+        async function generateNarrative() {
+            showLoading('narrative-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/report/narrative`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        valuation_result: {
+                            ecosystem_type: "wetlands_inland",
+                            area_hectares: 100,
+                            region: "indo_gangetic_plain",
+                            annual_value_mid: 50850000,
+                            npv: 341207639.14,
+                            carbon_annual_tonnes: 475.0,
+                            climate_resilience_score: 88,
+                            biodiversity_index: 82
+                        },
+                        location_name: "Test Wetland"
+                    })
+                });
+                const data = await response.json();
+                displayResponse('narrative-response', data);
+            } catch (error) {
+                displayResponse('narrative-response', { error: error.message }, true);
+            }
+        }
+
+        async function calculateImpact() {
+            showLoading('impact-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/impact`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        ecosystem_type: "wetlands_inland",
+                        area_hectares: 100,
+                        annual_value_inr: 50850000,
+                        carbon_tonnes_yr: 475,
+                        biodiversity_index: 82,
+                        climate_score: 88,
+                        services: []
+                    })
+                });
+                const data = await response.json();
+                displayResponse('impact-response', data);
+            } catch (error) {
+                displayResponse('impact-response', { error: error.message }, true);
+            }
+        }
+
+        async function ragSearch() {
+            showLoading('rag-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/rag/search?q=wetland+flood+control&k=3`);
+                const data = await response.json();
+                displayResponse('rag-response', data);
+            } catch (error) {
+                displayResponse('rag-response', { error: error.message }, true);
+            }
+        }
+
+        async function getAnalytics() {
+            showLoading('analytics-response');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/analytics`);
+                const data = await response.json();
+                displayResponse('analytics-response', data);
+            } catch (error) {
+                displayResponse('analytics-response', { error: error.message }, true);
+            }
+        }
+
+        // Auto-test health on load
+        window.onload = () => {
+            testHealth();
+        };
+    </script>
+</body>
+</html>

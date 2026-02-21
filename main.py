@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import json
 import pandas as pd
@@ -11,6 +13,9 @@ load_dotenv()
 app = FastAPI(title="PrakritiROI API")
 api_key = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=api_key) if api_key and api_key != "your_key_here" else None
+
+# Mount static files (your CSS, JS files)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Load data
 DATA_PATH = "india_ecosystem_coefficients.json"
@@ -28,8 +33,8 @@ class ROIRequest(BaseModel):
     region: str
 
 @app.get("/")
-def read_root():
-    return {"status": "PrakritiROI API is running", "version": "1.0.0"}
+async def serve_frontend():
+    return FileResponse("index.html")
 
 @app.get("/ecosystems")
 def get_ecosystems():

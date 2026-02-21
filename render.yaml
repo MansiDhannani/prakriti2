@@ -3,10 +3,10 @@ services:
     name: ecovalue-india-api
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.12.0
+        value: 3.11.8
       - key: GROQ_API_KEY
         sync: false          # Get free key at https://console.groq.com
       - key: DATABASE_URL
