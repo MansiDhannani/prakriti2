@@ -1,0 +1,714 @@
+{
+  "metadata": {
+    "title": "India Ecosystem Services Valuation Coefficients",
+    "currency": "INR",
+    "unit": "per hectare per year",
+    "base_year": 2023,
+    "sources": [
+      "Sukhdev et al. (2008) - TEEB India Study",
+      "TERI Ecosystem Services Publications",
+      "Forest Survey of India - ISFR 2023",
+      "MoEFCC National Communication to UNFCCC",
+      "Verma (2000) - IIFM Himachal Pradesh Study",
+      "Hussain & Badola (2010) - Wetland Valuation",
+      "CPCB Water Quality Reports",
+      "ATREE Western Ghats Studies",
+      "CPR Urban Ecosystem Services India"
+    ],
+    "notes": "All values in INR/hectare/year. Ranges reflect regional variation across India. Use midpoint for default calculations."
+  },
+
+  "ecosystems": {
+
+    "tropical_moist_forest": {
+      "name": "Tropical Moist Forest",
+      "description": "Dense evergreen/semi-evergreen forests of Western Ghats, Northeast India",
+      "region_examples": ["Western Ghats", "Northeast India", "Andaman Islands"],
+      "area_india_ha": 88000000,
+      "services": {
+        "carbon_sequestration": {
+          "value_min": 45000,
+          "value_max": 120000,
+          "value_midpoint": 82500,
+          "unit": "INR/ha/year",
+          "method": "Social Cost of Carbon × sequestration rate (4.5–8 tCO2/ha/yr)",
+          "carbon_rate_tonnes_ha_yr": { "min": 4.5, "max": 8.0 },
+          "carbon_price_inr_per_tonne": { "min": 1500, "max": 4200 },
+          "source": "FSI ISFR 2023 + MoEFCC NATCOM"
+        },
+        "water_regulation": {
+          "value_min": 35000,
+          "value_max": 95000,
+          "value_midpoint": 65000,
+          "unit": "INR/ha/year",
+          "method": "Replacement cost of watershed services",
+          "source": "TERI 2018, Sukhdev et al. 2008"
+        },
+        "flood_control": {
+          "value_min": 55000,
+          "value_max": 160000,
+          "value_midpoint": 107500,
+          "unit": "INR/ha/year",
+          "method": "Avoided damage cost method",
+          "source": "TERI 2018, ATREE Western Ghats"
+        },
+        "biodiversity_habitat": {
+          "value_min": 80000,
+          "value_max": 250000,
+          "value_midpoint": 165000,
+          "unit": "INR/ha/year",
+          "method": "Willingness-to-pay surveys + species richness index",
+          "source": "ATREE 2019, Sukhdev et al. 2008"
+        },
+        "pollination": {
+          "value_min": 12000,
+          "value_max": 45000,
+          "value_midpoint": 28500,
+          "unit": "INR/ha/year",
+          "method": "Crop production value × pollination dependency ratio",
+          "source": "TERI 2016"
+        },
+        "soil_formation": {
+          "value_min": 8000,
+          "value_max": 25000,
+          "value_midpoint": 16500,
+          "unit": "INR/ha/year",
+          "method": "Replacement cost of soil nutrients",
+          "source": "Sukhdev et al. 2008"
+        },
+        "recreation_tourism": {
+          "value_min": 15000,
+          "value_max": 60000,
+          "value_midpoint": 37500,
+          "unit": "INR/ha/year",
+          "method": "Travel cost method + visitor spending",
+          "source": "MoEFCC Forest Tourism Reports"
+        },
+        "timber_nwfp": {
+          "value_min": 20000,
+          "value_max": 75000,
+          "value_midpoint": 47500,
+          "unit": "INR/ha/year",
+          "method": "Market price method",
+          "source": "FSI ISFR 2023"
+        }
+      },
+      "total_annual_value": {
+        "min": 270000,
+        "max": 830000,
+        "midpoint": 550000
+      }
+    },
+
+    "tropical_dry_forest": {
+      "name": "Tropical Dry Deciduous Forest",
+      "description": "Sal, teak forests of central India, Deccan plateau",
+      "region_examples": ["Madhya Pradesh", "Maharashtra", "Odisha", "Jharkhand"],
+      "area_india_ha": 62000000,
+      "services": {
+        "carbon_sequestration": {
+          "value_min": 25000,
+          "value_max": 70000,
+          "value_midpoint": 47500,
+          "unit": "INR/ha/year",
+          "carbon_rate_tonnes_ha_yr": { "min": 2.5, "max": 5.0 },
+          "source": "FSI ISFR 2023"
+        },
+        "water_regulation": {
+          "value_min": 18000,
+          "value_max": 55000,
+          "value_midpoint": 36500,
+          "unit": "INR/ha/year",
+          "source": "IIFM Verma 2000, TERI"
+        },
+        "flood_control": {
+          "value_min": 30000,
+          "value_max": 90000,
+          "value_midpoint": 60000,
+          "unit": "INR/ha/year",
+          "source": "MoEFCC, TERI"
+        },
+        "biodiversity_habitat": {
+          "value_min": 35000,
+          "value_max": 110000,
+          "value_midpoint": 72500,
+          "unit": "INR/ha/year",
+          "source": "Sukhdev et al. 2008"
+        },
+        "pollination": {
+          "value_min": 8000,
+          "value_max": 30000,
+          "value_midpoint": 19000,
+          "unit": "INR/ha/year",
+          "source": "TERI 2016"
+        },
+        "soil_formation": {
+          "value_min": 5000,
+          "value_max": 18000,
+          "value_midpoint": 11500,
+          "unit": "INR/ha/year",
+          "source": "Sukhdev et al. 2008"
+        },
+        "recreation_tourism": {
+          "value_min": 8000,
+          "value_max": 35000,
+          "value_midpoint": 21500,
+          "unit": "INR/ha/year",
+          "source": "MoEFCC"
+        },
+        "timber_nwfp": {
+          "value_min": 25000,
+          "value_max": 80000,
+          "value_midpoint": 52500,
+          "unit": "INR/ha/year",
+          "source": "FSI ISFR 2023"
+        }
+      },
+      "total_annual_value": {
+        "min": 154000,
+        "max": 488000,
+        "midpoint": 321000
+      }
+    },
+
+    "wetlands_inland": {
+      "name": "Inland Wetlands",
+      "description": "Lakes, ponds, marshes, floodplains, freshwater swamps",
+      "region_examples": ["Indo-Gangetic Plain", "Chilika Lake", "Loktak Lake", "Keoladeo"],
+      "area_india_ha": 15260000,
+      "services": {
+        "flood_control": {
+          "value_min": 80000,
+          "value_max": 250000,
+          "value_midpoint": 165000,
+          "unit": "INR/ha/year",
+          "method": "Avoided damage cost — 1ha wetland protects ~7ha downstream",
+          "source": "Hussain & Badola 2010, TERI"
+        },
+        "water_filtration": {
+          "value_min": 40000,
+          "value_max": 100000,
+          "value_midpoint": 70000,
+          "unit": "INR/ha/year",
+          "method": "Replacement cost of equivalent water treatment",
+          "source": "CPCB, Hussain & Badola 2010"
+        },
+        "carbon_sequestration": {
+          "value_min": 30000,
+          "value_max": 85000,
+          "value_midpoint": 57500,
+          "unit": "INR/ha/year",
+          "carbon_rate_tonnes_ha_yr": { "min": 3.0, "max": 6.5 },
+          "source": "MoEFCC NATCOM"
+        },
+        "biodiversity_habitat": {
+          "value_min": 55000,
+          "value_max": 180000,
+          "value_midpoint": 117500,
+          "unit": "INR/ha/year",
+          "method": "Willingness-to-pay + bird watching tourism value",
+          "source": "Hussain & Badola 2010, ATREE"
+        },
+        "fisheries": {
+          "value_min": 35000,
+          "value_max": 120000,
+          "value_midpoint": 77500,
+          "unit": "INR/ha/year",
+          "method": "Market price of fish production",
+          "source": "TERI, State Fisheries Departments"
+        },
+        "groundwater_recharge": {
+          "value_min": 20000,
+          "value_max": 65000,
+          "value_midpoint": 42500,
+          "unit": "INR/ha/year",
+          "method": "Replacement cost of groundwater",
+          "source": "CGWB Reports"
+        },
+        "recreation_tourism": {
+          "value_min": 15000,
+          "value_max": 55000,
+          "value_midpoint": 35000,
+          "unit": "INR/ha/year",
+          "source": "MoEFCC, State Tourism Boards"
+        }
+      },
+      "total_annual_value": {
+        "min": 275000,
+        "max": 855000,
+        "midpoint": 565000
+      }
+    },
+
+    "mangroves": {
+      "name": "Mangrove Forests",
+      "description": "Coastal mangrove ecosystems",
+      "region_examples": ["Sundarbans", "Gujarat Coast", "Odisha Coast", "Andhra Pradesh"],
+      "area_india_ha": 4992000,
+      "services": {
+        "coastal_protection": {
+          "value_min": 150000,
+          "value_max": 500000,
+          "value_midpoint": 325000,
+          "unit": "INR/ha/year",
+          "method": "Avoided storm/cyclone damage cost",
+          "source": "TERI, MoEFCC Coastal Management"
+        },
+        "carbon_sequestration": {
+          "value_min": 70000,
+          "value_max": 200000,
+          "value_midpoint": 135000,
+          "unit": "INR/ha/year",
+          "carbon_rate_tonnes_ha_yr": { "min": 6.0, "max": 12.0 },
+          "notes": "Blue carbon — mangroves store 3-5x more carbon than tropical forests",
+          "source": "FSI ISFR 2023, MoEFCC Blue Carbon"
+        },
+        "fisheries_nursery": {
+          "value_min": 80000,
+          "value_max": 250000,
+          "value_midpoint": 165000,
+          "unit": "INR/ha/year",
+          "method": "Market value of fish/shrimp dependent on mangrove nursery",
+          "source": "CMFRI Reports"
+        },
+        "biodiversity_habitat": {
+          "value_min": 90000,
+          "value_max": 280000,
+          "value_midpoint": 185000,
+          "unit": "INR/ha/year",
+          "source": "ATREE, Sukhdev et al. 2008"
+        },
+        "water_filtration": {
+          "value_min": 30000,
+          "value_max": 90000,
+          "value_midpoint": 60000,
+          "unit": "INR/ha/year",
+          "source": "CPCB, TERI"
+        },
+        "timber_nwfp": {
+          "value_min": 15000,
+          "value_max": 50000,
+          "value_midpoint": 32500,
+          "unit": "INR/ha/year",
+          "source": "FSI Reports"
+        }
+      },
+      "total_annual_value": {
+        "min": 435000,
+        "max": 1370000,
+        "midpoint": 902500
+      }
+    },
+
+    "grasslands_savanna": {
+      "name": "Grasslands & Savannas",
+      "description": "Natural grasslands, shrublands, semi-arid ecosystems",
+      "region_examples": ["Deccan Plateau", "Rajasthan", "Gujarat", "Himalayan meadows"],
+      "area_india_ha": 12000000,
+      "services": {
+        "carbon_sequestration": {
+          "value_min": 8000,
+          "value_max": 30000,
+          "value_midpoint": 19000,
+          "unit": "INR/ha/year",
+          "carbon_rate_tonnes_ha_yr": { "min": 1.0, "max": 2.5 },
+          "source": "MoEFCC NATCOM, TERI"
+        },
+        "biodiversity_habitat": {
+          "value_min": 10000,
+          "value_max": 40000,
+          "value_midpoint": 25000,
+          "unit": "INR/ha/year",
+          "source": "Sukhdev et al. 2008, ATREE"
+        },
+        "grazing_livestock": {
+          "value_min": 12000,
+          "value_max": 45000,
+          "value_midpoint": 28500,
+          "unit": "INR/ha/year",
+          "method": "Market value of livestock products supported",
+          "source": "MoAFW Reports"
+        },
+        "pollination": {
+          "value_min": 5000,
+          "value_max": 20000,
+          "value_midpoint": 12500,
+          "unit": "INR/ha/year",
+          "source": "TERI 2016"
+        },
+        "soil_formation": {
+          "value_min": 3000,
+          "value_max": 12000,
+          "value_midpoint": 7500,
+          "unit": "INR/ha/year",
+          "source": "Sukhdev et al. 2008"
+        },
+        "water_regulation": {
+          "value_min": 6000,
+          "value_max": 22000,
+          "value_midpoint": 14000,
+          "unit": "INR/ha/year",
+          "source": "TERI"
+        }
+      },
+      "total_annual_value": {
+        "min": 44000,
+        "max": 169000,
+        "midpoint": 106500
+      }
+    },
+
+    "agricultural_land": {
+      "name": "Agricultural Land (Traditional)",
+      "description": "Rainfed and irrigated cropland with traditional farming",
+      "region_examples": ["Indo-Gangetic Plain", "Deccan", "Krishna-Godavari delta"],
+      "area_india_ha": 140000000,
+      "services": {
+        "food_production": {
+          "value_min": 40000,
+          "value_max": 150000,
+          "value_midpoint": 95000,
+          "unit": "INR/ha/year",
+          "method": "Net farm income (varies greatly by crop and region)",
+          "source": "CACP Price Policy Reports 2023"
+        },
+        "pollination": {
+          "value_min": 15000,
+          "value_max": 60000,
+          "value_midpoint": 37500,
+          "unit": "INR/ha/year",
+          "method": "Crop value × pollination dependency (0.3 average)",
+          "source": "TERI 2016, ICAR"
+        },
+        "carbon_sequestration": {
+          "value_min": 3000,
+          "value_max": 12000,
+          "value_midpoint": 7500,
+          "unit": "INR/ha/year",
+          "carbon_rate_tonnes_ha_yr": { "min": 0.3, "max": 1.0 },
+          "source": "ICAR, MoEFCC"
+        },
+        "soil_formation": {
+          "value_min": 5000,
+          "value_max": 18000,
+          "value_midpoint": 11500,
+          "unit": "INR/ha/year",
+          "source": "Sukhdev et al. 2008"
+        },
+        "cultural_value": {
+          "value_min": 5000,
+          "value_max": 20000,
+          "value_midpoint": 12500,
+          "unit": "INR/ha/year",
+          "method": "Rural livelihood and cultural heritage proxy value",
+          "source": "CPR India"
+        }
+      },
+      "total_annual_value": {
+        "min": 68000,
+        "max": 260000,
+        "midpoint": 164000
+      }
+    },
+
+    "degraded_land": {
+      "name": "Degraded / Wasteland",
+      "description": "Barren, eroded, or heavily degraded land with minimal vegetation",
+      "region_examples": ["Chambal ravines", "Degraded mining areas", "Over-grazed zones"],
+      "area_india_ha": 55000000,
+      "services": {
+        "carbon_sequestration": {
+          "value_min": 500,
+          "value_max": 3000,
+          "value_midpoint": 1750,
+          "unit": "INR/ha/year",
+          "source": "MoEFCC"
+        },
+        "biodiversity_habitat": {
+          "value_min": 500,
+          "value_max": 5000,
+          "value_midpoint": 2750,
+          "unit": "INR/ha/year",
+          "source": "Sukhdev et al. 2008"
+        },
+        "soil_formation": {
+          "value_min": -5000,
+          "value_max": 1000,
+          "value_midpoint": -2000,
+          "unit": "INR/ha/year",
+          "notes": "Negative value indicates net soil loss/erosion cost",
+          "source": "ICAR Soil Health"
+        }
+      },
+      "total_annual_value": {
+        "min": -4000,
+        "max": 9000,
+        "midpoint": 2500
+      }
+    },
+
+    "urban_green_spaces": {
+      "name": "Urban Green Spaces",
+      "description": "Parks, urban forests, green belts in cities",
+      "region_examples": ["Delhi", "Mumbai", "Bengaluru", "Chennai"],
+      "area_india_ha": 2500000,
+      "services": {
+        "air_purification": {
+          "value_min": 25000,
+          "value_max": 90000,
+          "value_midpoint": 57500,
+          "unit": "INR/ha/year",
+          "method": "Health cost savings from reduced PM2.5 and NO2",
+          "source": "CPR India, TERI Urban"
+        },
+        "urban_heat_mitigation": {
+          "value_min": 20000,
+          "value_max": 70000,
+          "value_midpoint": 45000,
+          "unit": "INR/ha/year",
+          "method": "Energy savings from cooling effect + health benefits",
+          "source": "CPR India, NIUA"
+        },
+        "flood_control": {
+          "value_min": 30000,
+          "value_max": 100000,
+          "value_midpoint": 65000,
+          "unit": "INR/ha/year",
+          "method": "Avoided stormwater infrastructure cost",
+          "source": "TERI Urban, CPR"
+        },
+        "recreation_wellbeing": {
+          "value_min": 15000,
+          "value_max": 55000,
+          "value_midpoint": 35000,
+          "unit": "INR/ha/year",
+          "method": "Hedonic pricing + willingness-to-pay surveys",
+          "source": "CPR India"
+        },
+        "carbon_sequestration": {
+          "value_min": 5000,
+          "value_max": 20000,
+          "value_midpoint": 12500,
+          "unit": "INR/ha/year",
+          "source": "FSI Urban Tree Cover"
+        },
+        "noise_reduction": {
+          "value_min": 8000,
+          "value_max": 25000,
+          "value_midpoint": 16500,
+          "unit": "INR/ha/year",
+          "method": "Hedonic pricing — property value premium",
+          "source": "CPR India"
+        }
+      },
+      "total_annual_value": {
+        "min": 103000,
+        "max": 360000,
+        "midpoint": 231500
+      }
+    },
+
+    "himalayan_alpine": {
+      "name": "Himalayan Alpine Ecosystems",
+      "description": "High-altitude meadows, glaciers, alpine forests",
+      "region_examples": ["Uttarakhand", "Himachal Pradesh", "Ladakh", "Sikkim"],
+      "area_india_ha": 18000000,
+      "services": {
+        "water_supply": {
+          "value_min": 60000,
+          "value_max": 200000,
+          "value_midpoint": 130000,
+          "unit": "INR/ha/year",
+          "method": "Downstream water value — feeds major river systems",
+          "source": "IIFM Verma 2000, MoEFCC Himalayan Policy"
+        },
+        "carbon_sequestration": {
+          "value_min": 20000,
+          "value_max": 65000,
+          "value_midpoint": 42500,
+          "unit": "INR/ha/year",
+          "source": "FSI ISFR 2023"
+        },
+        "biodiversity_habitat": {
+          "value_min": 50000,
+          "value_max": 175000,
+          "value_midpoint": 112500,
+          "unit": "INR/ha/year",
+          "notes": "High endemic species richness",
+          "source": "ATREE, Sukhdev et al. 2008"
+        },
+        "climate_regulation": {
+          "value_min": 40000,
+          "value_max": 130000,
+          "value_midpoint": 85000,
+          "unit": "INR/ha/year",
+          "method": "Glacier preservation value + albedo effect",
+          "source": "TERI, MoEFCC"
+        },
+        "tourism_recreation": {
+          "value_min": 25000,
+          "value_max": 90000,
+          "value_midpoint": 57500,
+          "unit": "INR/ha/year",
+          "source": "State Tourism Boards, MoT India"
+        },
+        "medicinal_plants": {
+          "value_min": 10000,
+          "value_max": 40000,
+          "value_midpoint": 25000,
+          "unit": "INR/ha/year",
+          "source": "TERI, Ayush Ministry Reports"
+        }
+      },
+      "total_annual_value": {
+        "min": 205000,
+        "max": 700000,
+        "midpoint": 452500
+      }
+    }
+  },
+
+  "carbon_pricing": {
+    "india_carbon_market_2023": {
+      "price_inr_per_tonne": 1500,
+      "source": "BEE Carbon Credits, India Carbon Market"
+    },
+    "social_cost_of_carbon_india": {
+      "price_inr_per_tonne": 3500,
+      "source": "MoEFCC, adapted from EPA SCC with India PPP adjustment"
+    },
+    "voluntary_carbon_market": {
+      "price_inr_per_tonne_min": 800,
+      "price_inr_per_tonne_max": 4200,
+      "source": "Gold Standard, VCS credits traded internationally"
+    },
+    "recommended_default": 2200,
+    "notes": "Use social cost of carbon for policy analysis; market price for project finance"
+  },
+
+  "land_use_alternatives": {
+    "real_estate_development": {
+      "name": "Real Estate / Urban Development",
+      "avg_revenue_inr_ha_yr": {
+        "tier1_cities": 2000000,
+        "tier2_cities": 800000,
+        "rural_peri_urban": 200000
+      },
+      "ecosystem_services_lost_pct": 85,
+      "notes": "Development destroys ~85% of pre-existing ecosystem services",
+      "source": "JLL India, Anarock Property Reports 2023"
+    },
+    "industrial_use": {
+      "name": "Industrial / Manufacturing Zone",
+      "avg_revenue_inr_ha_yr": {
+        "min": 300000,
+        "max": 1500000,
+        "midpoint": 700000
+      },
+      "ecosystem_services_lost_pct": 90,
+      "pollution_cost_inr_ha_yr": 50000,
+      "source": "DPIIT Industrial Area Reports"
+    },
+    "solar_farm": {
+      "name": "Solar Energy Farm",
+      "avg_revenue_inr_ha_yr": {
+        "min": 150000,
+        "max": 400000,
+        "midpoint": 260000
+      },
+      "ecosystem_services_lost_pct": 60,
+      "co2_avoided_tonnes_ha_yr": 650,
+      "notes": "Agrivoltaics (combined solar+agriculture) can reduce ecosystem loss to ~30%",
+      "source": "MNRE India Solar Reports 2023"
+    },
+    "commercial_agriculture": {
+      "name": "Intensive Commercial Agriculture",
+      "avg_revenue_inr_ha_yr": {
+        "min": 50000,
+        "max": 200000,
+        "midpoint": 110000
+      },
+      "ecosystem_services_lost_pct": 40,
+      "source": "CACP, Ministry of Agriculture 2023"
+    },
+    "rewilding_restoration": {
+      "name": "Rewilding / Ecological Restoration",
+      "avg_revenue_inr_ha_yr": {
+        "ecotourism": 25000,
+        "carbon_credits": 15000,
+        "total": 40000
+      },
+      "ecosystem_services_gained_pct_per_decade": 65,
+      "notes": "Low direct revenue but highest ecosystem ROI over 10-20 year horizon",
+      "source": "TERI, Forest Dept Restoration Projects"
+    },
+    "conservation_protected_area": {
+      "name": "Protected Area / Conservation",
+      "avg_revenue_inr_ha_yr": {
+        "tourism": 35000,
+        "carbon_credits": 20000,
+        "total": 55000
+      },
+      "ecosystem_services_retained_pct": 95,
+      "source": "WII, MoEFCC Protected Area Reports"
+    }
+  },
+
+  "regional_multipliers": {
+    "note": "Multiply base coefficients by these factors for regional accuracy",
+    "western_ghats": 1.4,
+    "northeast_india": 1.35,
+    "sundarbans": 1.5,
+    "indo_gangetic_plain": 0.9,
+    "deccan_plateau": 0.85,
+    "rajasthan_arid": 0.6,
+    "himalayan_region": 1.3,
+    "coastal_regions": 1.2,
+    "urban_metro": 1.6,
+    "source": "Regional adjustment based on TEEB India, TERI regional studies"
+  },
+
+  "climate_resilience_scores": {
+    "note": "Score 0-100 indicating climate resilience contribution",
+    "tropical_moist_forest": 92,
+    "mangroves": 95,
+    "wetlands_inland": 88,
+    "himalayan_alpine": 85,
+    "grasslands_savanna": 60,
+    "agricultural_land": 35,
+    "urban_green_spaces": 55,
+    "degraded_land": 5,
+    "solar_farm": 40,
+    "real_estate": 8,
+    "industrial": 5
+  },
+
+  "biodiversity_indices": {
+    "note": "Relative biodiversity value index (0-100)",
+    "tropical_moist_forest": 95,
+    "mangroves": 88,
+    "wetlands_inland": 82,
+    "himalayan_alpine": 90,
+    "grasslands_savanna": 55,
+    "agricultural_land_traditional": 30,
+    "agricultural_land_intensive": 15,
+    "urban_green_spaces": 35,
+    "degraded_land": 5,
+    "source": "IPBES India Assessment, WII Biodiversity Reports"
+  },
+
+  "npr_valuation_10year": {
+    "note": "Net Present Value over 10 years at 8% discount rate (INR/ha)",
+    "discount_rate": 0.08,
+    "tropical_moist_forest": 3700000,
+    "mangroves": 6050000,
+    "wetlands_inland": 3800000,
+    "himalayan_alpine": 3030000,
+    "grasslands": 715000,
+    "agricultural_traditional": 1100000,
+    "degraded_land": 17000,
+    "urban_development_tier2": 5370000,
+    "solar_farm": 1740000,
+    "notes": "Urban development NPV appears competitive short-term but excludes externalized costs"
+  }
+}

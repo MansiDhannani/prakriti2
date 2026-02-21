@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Backend Test</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #0c1a10; color: #e8f5e9; }
+    .test-section { margin: 20px 0; padding: 20px; background: #111f15; border-radius: 8px; }
+    .error { color: #ef5350; }
+    .success { color: #8cc97e; }
+    code { background: #162a1c; padding: 2px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<h2>Backend API Test</h2>
+
+<div class="test-section">
+  <h3>1. Test Valuation API</h3>
+  <button onclick="testValuation()">Run Valuation Test</button>
+  <pre id="val-output"></pre>
+</div>
+
+<div class="test-section">
+  <h3>2. Test Scenarios API</h3>
+  <button onclick="testScenarios()">Run Scenarios Test</button>
+  <pre id="scn-output"></pre>
+</div>
+
+<div class="test-section">
+  <h3>3. Test Full Frontend Rendering</h3>
+  <button onclick="testFullRender()">Run Full Render Test</button>
+  <div id="render-output" style="max-height: 400px; overflow-y: auto;"></div>
+</div>
+
+<script>
+const BASE = "http://localhost:8000";
+
+async function testValuation() {
+  const output = document.getElementById('val-output');
+  try {
+    output.textContent = 'Calling /api/v1/valuate...';
+    
+    const res = await fetch(`${BASE}/api/v1/valuate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ecosystem_type: 'wetlands_inland',
+        area_hectares: 100,
+        region: 'indo_gangetic_plain',
+        carbon_pricing: 'voluntary_market',
+        value_type: 'midpoint',
+        projection_years: 10
+      })
+    });
+
+    if (!res.ok) {
+      output.innerHTML = `<span class="error">❌ HTTP ${res.status}</span><br>${res.statusText}`;
+      return;
+    }
+
+    const data = await res.json();
+    output.innerHTML = `<span class="success">✅ SUCCESS</span><br><br>
+      annual_value_mid: ₹${data.annual_value_mid.toLocaleString('en-IN')}<br>
+      npv: ₹${data.npv.toLocaleString('en-IN')}<br>
+      services: ${data.services.length}<br>
+      Keys: ${Object.keys(data).length}<br><br>
+      <strong>Full response:</strong><br>
+      ${JSON.stringify(data, null, 2).substring(0, 500)}...`;
+  } catch (e) {
+    output.innerHTML = `<span class="error">❌ Error: ${e.message}</span>`;
+  }
+}
+
+async function testScenarios() {
+  const output = document.getElementById('scn-output');
+  try {
+    output.textContent = 'Calling /api/v1/scenarios/compare...';
+    
+    const res = await fetch(`${BASE}/api/v1/scenarios/compare`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ecosystem_type: 'wetlands_inland',
+        area_hectares: 100,
+        region: 'indo_gangetic_plain',
+        scenarios: ['preserve', 'restore', 'solar', 'agriculture', 'development', 'industrial'],
+        projection_years: 10
+      })
+    });
+
+    if (!res.ok) {
+      output.innerHTML = `<span class="error">❌ HTTP ${res.status}</span>`;
+      return;
+    }
+
+    const data = await res.json();
+    output.innerHTML = `<span class="success">✅ SUCCESS</span><br><br>
+      Scenarios: ${data.scenarios.length}<br>
+      Baseline NPV: ₹${data.baseline_eco_npv.toLocaleString('en-IN')}<br><br>
+      <strong>Scenario Names:</strong><br>
+      ${data.scenarios.map(s => `• ${s.scenario_name}: ₹${s.combined_npv.toLocaleString('en-IN')}`).join('\n')}`;
+  } catch (e) {
+    output.innerHTML = `<span class="error">❌ Error: ${e.message}</span>`;
+  }
+}
+
+async function testFullRender() {
+  const output = document.getElementById('render-output');
+  try {
+    output.innerHTML = '<p>Loading and rendering...</p>';
+    
+    // Fetch both endpoints
+    const [valRes, scnRes] = await Promise.all([
+      fetch(`${BASE}/api/v1/valuate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ecosystem_type: 'wetlands_inland',
+          area_hectares: 100,
+          region: 'indo_gangetic_plain',
+          carbon_pricing: 'voluntary_market',
+          value_type: 'midpoint',
+          projection_years: 10
+        })
+      }).then(r => r.json()),
+
+      fetch(`${BASE}/api/v1/scenarios/compare`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ecosystem_type: 'wetlands_inland',
+          area_hectares: 100,
+          region: 'indo_gangetic_plain',
+          scenarios: ['preserve', 'restore', 'solar', 'agriculture', 'development', 'industrial'],
+          projection_years: 10
+        })
+      }).then(r => r.json())
+    ]);
+
+    // Check data structure
+    const checks = [
+      { name: 'valRes is object', pass: typeof valRes === 'object' },
+      { name: 'valRes.annual_value_mid', pass: typeof valRes.annual_value_mid === 'number' },
+      { name: 'valRes.services is array', pass: Array.isArray(valRes.services) },
+      { name: 'valRes.services.length > 0', pass: valRes.services.length > 0 },
+      { name: 'scnRes.scenarios is array', pass: Array.isArray(scnRes.scenarios) },
+      { name: 'scnRes.scenarios.length > 0', pass: scnRes.scenarios.length > 0 },
+    ];
+
+    let html = '<span class="success">✅ API Data Received Successfully</span><br><br>';
+    html += '<strong>Data Structure Checks:</strong><br>';
+    checks.forEach(c => {
+      html += `${c.pass ? '✅' : '❌'} ${c.name}<br>`;
+    });
+
+    html += '<br><strong>First Service:</strong><br>';
+    if (valRes.services[0]) {
+      const s = valRes.services[0];
+      html += `Name: ${s.service_name}<br>`;
+      html += `Value: ₹${s.total_for_area.toLocaleString('en-IN')}<br>`;
+      html += `Keys: ${Object.keys(s).join(', ')}`;
+    }
+
+    html += '<br><br><strong>First Scenario:</strong><br>';
+    if (scnRes.scenarios[0]) {
+      const sc = scnRes.scenarios[0];
+      html += `Name: ${sc.scenario_name}<br>`;
+      html += `NPV: ₹${sc.combined_npv.toLocaleString('en-IN')}<br>`;
+      html += `Eco NPV: ₹${sc.ecosystem_npv.toLocaleString('en-IN')}<br>`;
+      html += `Rev NPV: ₹${sc.revenue_npv.toLocaleString('en-IN')}`;
+    }
+
+    output.innerHTML = html;
+  } catch (e) {
+    output.innerHTML = `<span class="error">❌ Error: ${e.message}</span><br><br>${e.stack}`;
+  }
+}
+
+// Auto-run tests
+window.onload = () => {
+  testValuation();
+  setTimeout(() => testScenarios(), 2000);
+  setTimeout(() => testFullRender(), 4000);
+};
+</script>
+
+</body>
+</html>

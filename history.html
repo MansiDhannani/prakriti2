@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>History — EcoValue India</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0c1a10; --surface: #111f15; --card: #162a1c; --border: #233d2a;
+  --forest: #1a5c3a; --moss: #2d7a4f; --sage: #5a9e6f; --leaf: #8cc97e;
+  --text: #e8f5e9; --muted: #7aad85; --gold: #f9a825; --red: #ef5350;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:var(--surface); border-bottom:1px solid var(--border); }
+.topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+.topbar-leaf { width:32px; height:32px; background:linear-gradient(135deg,var(--moss),var(--leaf)); border-radius:50% 6px 50% 6px; display:flex; align-items:center; justify-content:center; font-size:15px; }
+.topbar-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; }
+.topbar-nav { display:flex; gap:24px; }
+.topbar-nav a { text-decoration:none; color:var(--muted); font-size:13px; transition:color 0.2s; }
+.topbar-nav a:hover, .topbar-nav a.active { color:var(--leaf); }
+
+.page { max-width:1200px; margin:0 auto; padding:40px 32px; }
+
+.page-header { margin-bottom:40px; }
+.page-eyebrow { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--sage); margin-bottom:12px; }
+.page-title { font-family:'Playfair Display',serif; font-size:38px; font-weight:700; margin-bottom:8px; }
+.page-sub { font-size:15px; color:var(--muted); }
+
+/* Analytics strip */
+.analytics-strip { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:40px; }
+.analytics-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; }
+.analytics-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-bottom:8px; }
+.analytics-value { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--leaf); }
+.analytics-sub { font-size:11px; color:var(--muted); margin-top:4px; }
+
+/* Charts row */
+.charts-row { display:grid; grid-template-columns:1.5fr 1fr; gap:14px; margin-bottom:40px; }
+.chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px; }
+.chart-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; margin-bottom:4px; }
+.chart-sub { font-size:11px; color:var(--muted); margin-bottom:20px; }
+.chart-wrap { position:relative; height:220px; }
+
+/* Filters */
+.filters-row { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+.filter-select { background:var(--card); border:1px solid var(--border); color:var(--text); padding:9px 14px; border-radius:8px; font-family:'Outfit',sans-serif; font-size:13px; cursor:pointer; }
+.filter-select:focus { outline:none; border-color:var(--sage); }
+.refresh-btn { background:var(--forest); border:none; color:white; padding:9px 20px; border-radius:8px; cursor:pointer; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; transition:all 0.2s; }
+.refresh-btn:hover { background:var(--moss); }
+.count-badge { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); margin-left:auto; }
+
+/* History table */
+.history-card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.history-table { width:100%; border-collapse:collapse; }
+.history-table th { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); padding:14px 16px; text-align:left; border-bottom:1px solid var(--border); background:var(--surface); font-family:'JetBrains Mono',monospace; }
+.history-table td { padding:14px 16px; font-size:13px; border-bottom:1px solid rgba(35,61,42,0.4); }
+.history-table tr:last-child td { border-bottom:none; }
+.history-table tr:hover td { background:rgba(35,61,42,0.3); cursor:pointer; }
+
+.eco-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:600; background:rgba(45,110,66,0.15); color:var(--leaf); border:1px solid rgba(45,110,66,0.3); }
+.value-cell { font-family:'JetBrains Mono',monospace; color:var(--leaf); font-size:12px; }
+.region-cell { font-size:11px; color:var(--muted); }
+.date-cell { font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+.score-bar { display:flex; align-items:center; gap:6px; }
+.score-fill { height:5px; border-radius:3px; }
+
+.empty-row td { text-align:center; padding:60px; color:var(--muted); font-size:14px; }
+
+/* Loading */
+.loading-row { text-align:center; padding:60px; }
+.spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--leaf); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+@media(max-width:900px) {
+  .analytics-strip { grid-template-columns:1fr 1fr; }
+  .charts-row { grid-template-columns:1fr; }
+  .page { padding:24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-brand">
+    <div class="topbar-leaf">🌿</div>
+    <span class="topbar-title">PrakritiROI</span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="history.html" class="active">History</a>
+    <a href="about.html">About</a>
+  </nav>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-eyebrow">Valuation History</div>
+    <h1 class="page-title">All Ecosystem Valuations</h1>
+    <p class="page-sub">Every valuation saved automatically. Click any row to view full details.</p>
+  </div>
+
+  <!-- Analytics strip -->
+  <div class="analytics-strip" id="analyticsStrip">
+    <div class="analytics-card"><div class="analytics-label">Total Valuations</div><div class="analytics-value" id="totalVal">—</div></div>
+    <div class="analytics-card"><div class="analytics-label">Area Assessed</div><div class="analytics-value" id="totalArea">—</div></div>
+    <div class="analytics-card"><div class="analytics-label">Total NPV Assessed</div><div class="analytics-value" id="totalNPV">—</div></div>
+    <div class="analytics-card"><div class="analytics-label">Carbon/yr Total</div><div class="analytics-value" id="totalCarbon">—</div></div>
+    <div class="analytics-card"><div class="analytics-label">Reports Generated</div><div class="analytics-value" id="totalReports">—</div></div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Valuations Over Time</div>
+      <div class="chart-sub">Number of ecosystem valuations by ecosystem type</div>
+      <div class="chart-wrap"><canvas id="ecoChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Top Regions Assessed</div>
+      <div class="chart-sub">Most frequently analysed Indian regions</div>
+      <div class="chart-wrap"><canvas id="regionChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <select class="filter-select" id="ecoFilter" onchange="loadHistory()">
+      <option value="">All Ecosystems</option>
+      <option value="tropical_moist_forest">Tropical Moist Forest</option>
+      <option value="wetlands_inland">Inland Wetlands</option>
+      <option value="mangroves">Mangroves</option>
+      <option value="himalayan_alpine">Himalayan Alpine</option>
+      <option value="grasslands_savanna">Grasslands</option>
+      <option value="agricultural_land">Agricultural Land</option>
+      <option value="urban_green_spaces">Urban Green</option>
+      <option value="degraded_land">Degraded Land</option>
+    </select>
+    <select class="filter-select" id="regionFilter" onchange="loadHistory()">
+      <option value="">All Regions</option>
+      <option value="western_ghats">Western Ghats</option>
+      <option value="northeast_india">Northeast India</option>
+      <option value="sundarbans">Sundarbans</option>
+      <option value="indo_gangetic_plain">Indo-Gangetic Plain</option>
+      <option value="deccan_plateau">Deccan Plateau</option>
+      <option value="himalayan_region">Himalayan Region</option>
+      <option value="coastal_regions">Coastal Regions</option>
+      <option value="urban_metro">Urban Metro</option>
+    </select>
+    <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+    <span class="count-badge" id="countBadge">Loading...</span>
+  </div>
+
+  <!-- Table -->
+  <div class="history-card">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Ecosystem</th>
+          <th>Location / Region</th>
+          <th>Area (ha)</th>
+          <th>Annual Value</th>
+          <th>10-yr NPV</th>
+          <th>Carbon/yr</th>
+          <th>Climate</th>
+          <th>Biodiversity</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody">
+        <tr><td colspan="9" class="empty-row"><div class="spinner"></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const BASE = "http://localhost:8000"
+
+function fmt(n) {
+  if (!n && n !== 0) return '—'
+  const abs = Math.abs(n)
+  if (abs >= 1e7) return '₹' + (abs/1e7).toFixed(1) + ' Cr'
+  if (abs >= 1e5) return '₹' + (abs/1e5).toFixed(1) + ' L'
+  return '₹' + Math.round(abs).toLocaleString('en-IN')
+}
+
+function fmtDate(iso) {
+  return new Date(iso).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })
+}
+
+const ecoEmojis = {
+  tropical_moist_forest:'🌲', tropical_dry_forest:'🌳', wetlands_inland:'🌊',
+  mangroves:'🌴', grasslands_savanna:'🌾', agricultural_land:'🚜',
+  himalayan_alpine:'🏔️', urban_green_spaces:'🌳', degraded_land:'🏜️'
+}
+
+async function loadAnalytics() {
+  try {
+    const data = await fetch(`${BASE}/api/v1/analytics`).then(r => r.json())
+    document.getElementById('totalVal').textContent = data.total_valuations || '0'
+    document.getElementById('totalArea').textContent = data.total_area_valuated_ha
+      ? (data.total_area_valuated_ha >= 1000
+        ? (data.total_area_valuated_ha/1000).toFixed(1) + 'K ha'
+        : data.total_area_valuated_ha.toFixed(0) + ' ha')
+      : '0 ha'
+    document.getElementById('totalNPV').textContent = fmt(data.total_npv_inr || 0)
+    document.getElementById('totalCarbon').textContent = data.total_carbon_tonnes_yr
+      ? Math.round(data.total_carbon_tonnes_yr).toLocaleString('en-IN') + ' t'
+      : '0 t'
+    document.getElementById('totalReports').textContent = data.total_reports_generated || '0'
+
+    // Ecosystem chart
+    if (data.top_ecosystems?.length) {
+      new Chart(document.getElementById('ecoChart'), {
+        type: 'bar',
+        data: {
+          labels: data.top_ecosystems.map(e => e.name),
+          datasets: [{ data: data.top_ecosystems.map(e => e.count), backgroundColor: '#5a9e6fcc', borderRadius: 4 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color:'#7aad85', font:{ size:10 }, maxRotation:30 }, grid:{ color:'#1a3325' } },
+            y: { ticks: { color:'#7aad85', font:{ size:10 }, stepSize:1 }, grid:{ color:'#1a3325' } }
+          }
+        }
+      })
+    } else {
+      document.getElementById('ecoChart').parentElement.innerHTML = '<p style="text-align:center;color:var(--muted);padding:80px 0;font-size:13px">No data yet — run your first valuation</p>'
+    }
+
+    // Region chart
+    if (data.top_regions?.length) {
+      new Chart(document.getElementById('regionChart'), {
+        type: 'doughnut',
+        data: {
+          labels: data.top_regions.map(r => r.region.replace(/_/g,' ')),
+          datasets: [{ data: data.top_regions.map(r => r.count),
+            backgroundColor: ['#2d7a4f','#5a9e6f','#8cc97e','#0288d1','#f9a825','#a0522d'],
+            borderColor: '#162a1c', borderWidth: 2 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color:'#7aad85', font:{ size:10 } } } }
+        }
+      })
+    } else {
+      document.getElementById('regionChart').parentElement.innerHTML = '<p style="text-align:center;color:var(--muted);padding:80px 0;font-size:13px">No data yet</p>'
+    }
+  } catch(e) {
+    console.warn('Analytics unavailable:', e.message)
+  }
+}
+
+async function loadHistory() {
+  const eco    = document.getElementById('ecoFilter').value
+  const region = document.getElementById('regionFilter').value
+  let url = `${BASE}/api/v1/history?limit=50`
+  if (eco)    url += `&ecosystem_type=${eco}`
+  if (region) url += `&region=${region}`
+
+  document.getElementById('historyBody').innerHTML =
+    '<tr><td colspan="9" class="empty-row"><div class="spinner"></div></td></tr>'
+
+  try {
+    const data = await fetch(url).then(r => r.json())
+    document.getElementById('countBadge').textContent = `${data.total} records`
+
+    if (!data.results?.length) {
+      document.getElementById('historyBody').innerHTML =
+        '<tr><td colspan="9" class="empty-row">No valuations yet — <a href="dashboard.html" style="color:var(--sage)">run your first one →</a></td></tr>'
+      return
+    }
+
+    document.getElementById('historyBody').innerHTML = data.results.map(r => `
+      <tr onclick="window.location='dashboard.html'">
+        <td>
+          <div class="eco-badge">
+            ${ecoEmojis[r.ecosystem_type] || '🌿'} ${r.ecosystem_name}
+          </div>
+        </td>
+        <td>
+          <div style="font-weight:500">${r.location_name || '—'}</div>
+          <div class="region-cell">${r.region?.replace(/_/g,' ') || ''}</div>
+        </td>
+        <td style="font-family:'JetBrains Mono',monospace">${r.area_hectares?.toLocaleString('en-IN') || '—'}</td>
+        <td class="value-cell">${fmt(r.annual_value_mid)}</td>
+        <td class="value-cell" style="color:#42a5f5">${fmt(r.npv)}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold)">${r.carbon_annual_tonnes ? Math.round(r.carbon_annual_tonnes).toLocaleString('en-IN') + ' t' : '—'}</td>
+        <td>
+          <div class="score-bar">
+            <div class="score-fill" style="width:${(r.climate_score||0)*0.5}px;background:linear-gradient(90deg,#1565c0,#42a5f5)"></div>
+            <span style="font-size:11px;color:var(--muted)">${r.climate_score || '—'}</span>
+          </div>
+        </td>
+        <td>
+          <div class="score-bar">
+            <div class="score-fill" style="width:${(r.biodiversity_index||0)*0.5}px;background:linear-gradient(90deg,var(--forest),var(--leaf))"></div>
+            <span style="font-size:11px;color:var(--muted)">${r.biodiversity_index || '—'}</span>
+          </div>
+        </td>
+        <td class="date-cell">${fmtDate(r.created_at)}</td>
+      </tr>`).join('')
+  } catch(e) {
+    document.getElementById('historyBody').innerHTML = `
+      <tr><td colspan="9" class="empty-row" style="color:#ef9a9a">
+        API offline — start the backend with <code style="background:var(--card);padding:2px 6px;border-radius:4px">python run.py</code>
+      </td></tr>`
+    document.getElementById('countBadge').textContent = 'API offline'
+  }
+}
+
+// ── IMPACT & TICKER ──────────────────────────────────────────────────────
+
+async function loadImpactCards(valData) {
+  try {
+    const res = await fetch(`${BASE}/api/v1/impact`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(valData)
+    }).then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.detail) }))
+
+    const grid = document.getElementById('impactGrid')
+    grid.innerHTML = res.map(card => `
+      <div class="impact-card">
+        <div class="impact-icon">${card.icon}</div>
+        <div class="impact-metric">${card.metric}</div>
+        <div class="impact-label">${card.label}</div>
+        <div class="impact-source">${card.source}</div>
+      </div>
+    `).join('')
+  } catch(err) {
+    console.error('Impact loading error:', err)
+  }
+}
+
+function addTickerItem(val) {
+  const list = document.getElementById('tickerList')
+  if (list.querySelector('.ticker-empty')) list.innerHTML = ''
+  const time = new Date(val.created_at || Date.now()).toLocaleTimeString('en-IN')
+  const item = document.createElement('div')
+  item.className = 'ticker-item'
+  item.innerHTML = `
+    <div>
+      <div class="ticker-location">${val.location_name || val.ecosystem_name}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">${val.area_hectares} ha</div>
+    </div>
+    <div style="text-align:right">
+      <div class="ticker-value">₹${fmt(val.annual_value_mid)}</div>
+      <div class="ticker-time">${time}</div>
+    </div>
+  `
+  list.insertBefore(item, list.firstChild)
+  while (list.children.length > 15) list.removeChild(list.lastChild)
+}
+
+function loadAll() { loadAnalytics(); loadHistory(); }
+loadAll()
+
+// Load sample impact on page load
+setTimeout(() => {
+  const historyRows = document.querySelectorAll('#historyBody tr')
+  if (historyRows.length > 0) {
+    historyRows.forEach(row => {
+      row.addEventListener('click', async (e) => {
+        const cells = row.querySelectorAll('td')
+        if (cells.length > 0) {
+          // Try to extract data from row and show impact
+          try {
+            // Get data from visible cells
+            const ecoName = cells[0]?.textContent || ''
+            const area = parseFloat(cells[2]?.textContent?.replace(',','') || 0)
+            if (area > 0) {
+              loadImpactCards({
+                ecosystem_name: ecoName,
+                area_hectares: area,
+                annual_value_mid: 5000000,
+                carbon_annual_tonnes: 500
+              })
+            }
+          } catch (err) {
+            console.log('Could not load impact from row')
+          }
+        }
+      })
+    })
+  }
+}, 1000)
+</script>
+</body>
+</html>

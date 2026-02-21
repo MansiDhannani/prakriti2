@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — EcoValue India</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:      #0c1a10;
+  --surface: #111f15;
+  --card:    #162a1c;
+  --border:  #233d2a;
+  --forest:  #1a5c3a;
+  --moss:    #2d7a4f;
+  --sage:    #5a9e6f;
+  --leaf:    #8cc97e;
+  --mist:    #c8e6c9;
+  --text:    #e8f5e9;
+  --muted:   #7aad85;
+  --gold:    #f9a825;
+  --amber:   #ffca28;
+  --red:     #ef5350;
+  --blue:    #42a5f5;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── TOP NAV ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+}
+
+.topbar-brand {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--text);
+}
+
+.topbar-leaf {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--moss), var(--leaf));
+  border-radius: 50% 6px 50% 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+
+.topbar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px; font-weight: 700; color: var(--text);
+}
+
+.topbar-nav { display: flex; gap: 24px; align-items: center; }
+.topbar-nav a {
+  text-decoration: none; color: var(--muted); font-size: 13px;
+  transition: color 0.2s;
+}
+.topbar-nav a:hover, .topbar-nav a.active { color: var(--leaf); }
+
+.api-status {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--muted);
+}
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #4caf50;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.offline { background: var(--red); animation: none; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 57px); }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 20px;
+  overflow-y: auto;
+}
+
+.sidebar-section { margin-bottom: 28px; }
+
+.sidebar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--sage); margin-bottom: 12px;
+}
+
+.form-group { margin-bottom: 14px; }
+
+.form-label {
+  font-size: 11px; letter-spacing: 0.5px;
+  color: var(--muted); display: block; margin-bottom: 6px;
+}
+
+select, input[type="number"], input[type="text"] {
+  width: 100%; background: var(--card);
+  border: 1px solid var(--border); color: var(--text);
+  padding: 10px 12px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 13px;
+  cursor: pointer; transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+select:focus, input:focus { outline: none; border-color: var(--sage); }
+
+/* ── GLOBAL STATS BAR ── */
+.global-stats-bar {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 24px; margin-bottom: 24px;
+  display: flex; justify-content: space-around; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.gstat-item { text-align: center; }
+.gstat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.gstat-value { font-size: 14px; color: var(--leaf); font-weight: 600; }
+.gstat-value span { color: var(--gold); margin-right: 4px; }
+
+.calc-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--forest), var(--moss));
+  border: none; color: white;
+  padding: 13px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.calc-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.calc-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.ai-btn {
+  width: 100%; margin-top: 10px;
+  background: rgba(249,168,37,0.12);
+  border: 1px solid rgba(249,168,37,0.3); color: var(--gold);
+  padding: 11px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+
+.ai-btn:hover { background: rgba(249,168,37,0.2); }
+.ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.pdf-btn {
+  width: 100%; margin-top: 8px;
+  background: rgba(66,165,245,0.1);
+  border: 1px solid rgba(66,165,245,0.3); color: var(--blue);
+  padding: 11px; border-radius: 8px;
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+
+.pdf-btn:hover { background: rgba(66,165,245,0.2); }
+.pdf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.sidebar-info {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px; margin-top: 16px;
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+}
+
+/* ── MAIN ── */
+.main { padding: 28px; overflow-y: auto; }
+
+/* Empty state */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; text-align: center; color: var(--muted);
+}
+
+.empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
+.empty-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); margin-bottom: 10px; }
+.empty-sub { font-size: 14px; max-width: 360px; line-height: 1.6; }
+
+/* Loading spinner */
+.loading-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; gap: 20px;
+}
+
+.spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--leaf);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── METRIC CARDS ── */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 14px; margin-bottom: 20px;
+}
+
+.metric-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  position: relative; overflow: hidden;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.metric-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+
+.metric-card.green::before { background: linear-gradient(90deg, var(--forest), var(--leaf)); }
+.metric-card.gold::before  { background: linear-gradient(90deg, #c45c2a, var(--gold)); }
+.metric-card.blue::before  { background: linear-gradient(90deg, #1565c0, var(--blue)); }
+.metric-card.red::before   { background: linear-gradient(90deg, #b71c1c, var(--red)); }
+
+.metric-icon { font-size: 24px; margin-bottom: 10px; }
+.metric-label {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.metric-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700; line-height: 1; margin-bottom: 4px;
+}
+
+.metric-value.green { color: var(--leaf); }
+.metric-value.gold  { color: var(--gold); }
+.metric-value.blue  { color: var(--blue); }
+.metric-value.red   { color: #ef9a9a; }
+.metric-sub { font-size: 11px; color: var(--muted); }
+
+/* ── CHARTS ── */
+.charts-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; margin-bottom: 20px; }
+
+.chart-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.chart-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+.chart-wrap { position: relative; height: 220px; }
+
+/* ── SERVICES TABLE ── */
+.table-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px; margin-bottom: 20px;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.services-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.services-table th {
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); padding: 8px 12px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.services-table td { padding: 11px 12px; font-size: 12px; border-bottom: 1px solid rgba(35,61,42,0.4); }
+.services-table tr:last-child td { border-bottom: none; }
+.services-table tr:hover td { background: rgba(35,61,42,0.3); }
+
+.svc-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.svc-bar { height: 5px; border-radius: 3px; background: linear-gradient(90deg, var(--moss), var(--leaf)); }
+
+/* ── SCENARIO CARDS ── */
+.scenarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+
+.scenario-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  transition: all 0.2s;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.scenario-card:hover { border-color: var(--sage); transform: translateY(-2px); }
+
+.scenario-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.scenario-type { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; }
+
+.scenario-npv { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.npv-green { color: var(--leaf); }
+.npv-gold  { color: var(--gold); }
+.npv-red   { color: #ef9a9a; }
+
+.scenario-breakdown { font-size: 11px; color: var(--muted); margin-top: 8px; }
+.scenario-loss { font-size: 11px; margin-top: 6px; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+.loss-high { background: rgba(239,83,80,0.1); color: #ef9a9a; }
+.loss-mid  { background: rgba(249,168,37,0.1); color: var(--gold); }
+.loss-low  { background: rgba(140,201,126,0.1); color: var(--leaf); }
+
+/* ── INDEX BARS ── */
+.indices-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+
+.index-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.index-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.index-label { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; }
+.index-score { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; }
+
+.index-track { height: 10px; background: var(--surface); border-radius: 5px; overflow: hidden; }
+.index-fill { height: 100%; border-radius: 5px; transition: width 1s ease; }
+.index-sub { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+/* ── AI NARRATIVE MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 24px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; width: 100%; max-width: 720px;
+  max-height: 85vh; overflow-y: auto; padding: 36px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute; top: 20px; right: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--muted); width: 32px; height: 32px;
+  border-radius: 50%; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close:hover { color: var(--text); background: var(--border); }
+
+.modal-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--sage); margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; }
+
+.narrative-text { font-size: 14px; line-height: 1.8; color: rgba(232,245,233,0.85); }
+.narrative-text p { margin-bottom: 16px; }
+
+.findings-section { margin-top: 28px; }
+.findings-title { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+
+.finding-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid rgba(35,61,42,0.4);
+  font-size: 13px; color: var(--text); line-height: 1.5;
+}
+
+.finding-item:last-child { border-bottom: none; }
+.finding-num { color: var(--leaf); font-family: 'JetBrains Mono', monospace; font-size: 12px; min-width: 20px; margin-top: 1px; }
+
+.reco-item {
+  background: rgba(45,110,66,0.1); border-left: 3px solid var(--sage);
+  padding: 12px 16px; border-radius: 4px; margin-bottom: 10px;
+  font-size: 13px; line-height: 1.5;
+}
+
+.modal-loading { text-align: center; padding: 40px; }
+.modal-loading .spinner { margin: 0 auto 16px; }
+.modal-loading p { color: var(--muted); font-size: 13px; }
+
+/* ── IMPACT CARDS ── */
+.impact-section { margin-top: 40px; margin-bottom: 40px; }
+
+.impact-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--sage); margin-bottom: 16px;
+}
+
+.impact-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.impact-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px;
+  transition: all 0.3s ease;
+  animation: slideIn 0.4s ease forwards;
+}
+
+.impact-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--leaf);
+  box-shadow: 0 4px 16px rgba(140,201,126,0.1);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.impact-icon { font-size: 32px; margin-bottom: 10px; }
+.impact-metric {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700; margin-bottom: 4px;
+}
+
+.impact-label {
+  font-size: 12px; color: var(--muted); line-height: 1.3; margin-bottom: 8px;
+}
+
+.impact-source {
+  font-size: 10px; color: var(--border);
+  padding-top: 8px; border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 8px;
+}
+
+/* ── LIVE TICKER ── */
+.ticker-section { margin-top: 40px; }
+
+.ticker-container {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+}
+
+.ticker-header {
+  background: var(--card); padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--sage);
+}
+
+.ticker-list {
+  max-height: 300px; overflow-y: auto;
+}
+
+.ticker-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid rgba(35,61,42,0.3);
+  font-size: 11px; animation: slideInLeft 0.3s ease;
+}
+
+.ticker-item:last-child { border-bottom: none; }
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.ticker-location { font-weight: 600; color: var(--leaf); }
+.ticker-meta { color: var(--muted); margin: 0 8px; }
+.ticker-value { color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+.ticker-time { color: var(--border); font-size: 9px; margin-top: 2px; }
+
+.ticker-empty {
+  padding: 24px; text-align: center;
+  color: var(--muted); font-style: italic; font-size: 12px;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 300;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 20px;
+  font-size: 13px; color: var(--text);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: var(--sage); }
+.toast.error   { border-color: var(--red); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .charts-row { grid-template-columns: 1fr; }
+  .scenarios-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-brand">
+    <div class="topbar-leaf">🌿</div>
+    <span class="topbar-title">PrakritiROI</span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="history.html">History</a>
+    <a href="about.html">About</a>
+  </nav>
+  <div class="api-status">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">connecting...</span>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Land Parcel</div>
+      <div class="form-group">
+        <label class="form-label">Location Name (optional)</label>
+        <input type="text" id="locationName" placeholder="e.g. Harike Wetland, Punjab">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ecosystem Type</label>
+        <select id="ecoType">
+          <option value="tropical_moist_forest">Tropical Moist Forest</option>
+          <option value="tropical_dry_forest">Tropical Dry Forest</option>
+          <option value="wetlands_inland" selected>Inland Wetland</option>
+          <option value="mangroves">Mangrove Forest</option>
+          <option value="grasslands_savanna">Grassland / Savanna</option>
+          <option value="agricultural_land">Agricultural Land</option>
+          <option value="himalayan_alpine">Himalayan Alpine</option>
+          <option value="urban_green_spaces">Urban Green Spaces</option>
+          <option value="degraded_land">Degraded / Wasteland</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Area (Hectares)</label>
+        <input type="number" id="areaHa" value="100" min="1" max="500000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Region</label>
+        <select id="region">
+          <option value="western_ghats">Western Ghats</option>
+          <option value="northeast_india">Northeast India</option>
+          <option value="sundarbans">Sundarbans</option>
+          <option value="indo_gangetic_plain" selected>Indo-Gangetic Plain</option>
+          <option value="deccan_plateau">Deccan Plateau</option>
+          <option value="rajasthan_arid">Rajasthan / Arid</option>
+          <option value="himalayan_region">Himalayan Region</option>
+          <option value="coastal_regions">Coastal Region</option>
+          <option value="urban_metro">Urban Metro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Carbon Pricing Method</label>
+        <select id="carbonPricing">
+          <option value="voluntary_market" selected>Voluntary Market (₹2,200/t)</option>
+          <option value="social_cost">Social Cost of Carbon (₹3,500/t)</option>
+          <option value="market_price">India Carbon Market (₹1,500/t)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Projection Years</label>
+        <select id="projYears">
+          <option value="10" selected>10 Years</option>
+          <option value="20">20 Years</option>
+          <option value="30">30 Years</option>
+        </select>
+      </div>
+      <button class="calc-btn" id="calcBtn" onclick="runValuation()">⚡ Calculate Value</button>
+      <button class="ai-btn" id="aiBtn" onclick="generateNarrative()" disabled>✨ Generate AI Policy Brief</button>
+      <button class="pdf-btn" id="pdfBtn" onclick="downloadPDF()" disabled>📄 Download PDF Report</button>
+    </div>
+
+    <div class="sidebar-info" id="sidebarInfo">
+      Enter land parcel details and click Calculate. Results are saved automatically to history.
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <!-- Global Live Stats -->
+    <div class="global-stats-bar" id="globalStats">
+      <div class="gstat-item"><div class="gstat-label">Live Valuations</div><div class="gstat-value" id="gCount">0</div></div>
+      <div class="gstat-item"><div class="gstat-label">Total Area Assessed</div><div class="gstat-value" id="gArea">0 ha</div></div>
+      <div class="gstat-item"><div class="gstat-label">Global Annual Value</div><div class="gstat-value" id="gValue">₹0</div></div>
+      <div class="gstat-item"><div class="gstat-label">Carbon Offset</div><div class="gstat-value" id="gCarbon">0 t</div></div>
+    </div>
+
+    <div id="mainContent">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🌿</div>
+        <div class="empty-title">Ready to value your ecosystem</div>
+        <div class="empty-sub">Select an ecosystem type, enter the area and region, then click Calculate to see the full valuation.</div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- AI NARRATIVE MODAL -->
+<div class="modal-overlay" id="narrativeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent">
+      <div class="modal-loading">
+        <div class="spinner"></div>
+        <p>Generating policy brief with RAG + Groq AI...<br><span style="opacity:0.6;font-size:11px">Retrieving Indian case studies and coefficients</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE = window.location.origin
+let currentValuation = null
+let currentScenarios = null
+
+// ── API Status Check ────────────────────────────────────────────────────────
+async function checkAPI() {
+  try {
+    const r = await fetch(`${BASE}/health`, { signal: AbortSignal.timeout(3000) })
+    const d = await r.json()
+    document.getElementById('statusDot').className = 'status-dot'
+    document.getElementById('statusText').textContent = d.groq_ai_enabled ? 'API + Groq ready' : 'API ready (no Groq key)'
+  } catch {
+    document.getElementById('statusDot').className = 'status-dot offline'
+    document.getElementById('statusText').textContent = 'API offline — start backend'
+  }
+}
+
+checkAPI()
+setInterval(checkAPI, 15000)
+
+// ── Format helpers ──────────────────────────────────────────────────────────
+function fmt(n) {
+  const abs = Math.abs(n)
+  if (abs >= 1e7) return (n < 0 ? '-' : '') + '₹' + (abs/1e7).toFixed(2) + ' Cr'
+  if (abs >= 1e5) return (n < 0 ? '-' : '') + '₹' + (abs/1e5).toFixed(2) + ' L'
+  return (n < 0 ? '-₹' : '₹') + Math.round(abs).toLocaleString('en-IN')
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast')
+  t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg
+  t.className = `toast ${type} show`
+  setTimeout(() => t.classList.remove('show'), 3000)
+}
+
+// ── MAIN VALUATION ──────────────────────────────────────────────────────────
+async function runValuation() {
+  const btn = document.getElementById('calcBtn')
+  btn.disabled = true; btn.textContent = '⏳ Calculating...'
+
+  const req = {
+    ecosystem_type:   document.getElementById('ecoType').value,
+    area_hectares:    parseFloat(document.getElementById('areaHa').value) || 100,
+    region:           document.getElementById('region').value,
+    carbon_pricing:   document.getElementById('carbonPricing').value,
+    projection_years: parseInt(document.getElementById('projYears').value),
+    discount_rate:    0.08,
+    value_type:       'midpoint',
+    location_name:    document.getElementById('locationName').value || null,
+  }
+
+  const scnReq = { ...req, scenarios: ['preserve','restore','solar','agriculture','development','industrial'] }
+
+  document.getElementById('mainContent').innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p style="color:var(--muted);font-size:14px">Calculating ecosystem services value...</p>
+    </div>`
+
+  try {
+    const [valRes, scnRes] = await Promise.all([
+      fetch(`${BASE}/api/v1/valuate`, {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(req)
+      }).then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.detail) })),
+
+      fetch(`${BASE}/api/v1/scenarios/compare`, {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(scnReq)
+      }).then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.detail) }))
+    ])
+
+    currentValuation = valRes
+    currentScenarios = scnRes
+    renderResults(valRes, scnRes)
+    document.getElementById('aiBtn').disabled = false
+    document.getElementById('pdfBtn').disabled = false
+    document.getElementById('sidebarInfo').innerHTML =
+      `<strong style="color:var(--leaf)">✅ Saved to history</strong><br>Record ID: <code style="font-size:10px">${valRes.record_id || '—'}</code>`
+    showToast('Valuation complete')
+
+  } catch(err) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">Could not connect to API</div>
+        <div class="empty-sub" style="color:#ef9a9a">${err.message}<br><br>Make sure the backend is running:<br><code style="font-size:12px;background:var(--card);padding:4px 8px;border-radius:4px">python run.py</code></div>
+      </div>`
+    showToast(err.message, 'error')
+  }
+
+  btn.disabled = false; btn.textContent = '⚡ Calculate Value'
+}
+
+// ── RENDER RESULTS ──────────────────────────────────────────────────────────
+function renderResults(val, scn) {
+  const oppCost = val.annual_value_mid * 0.85 * 6.71
+
+  const html = `
+  <!-- Metrics -->
+  <div class="metrics-grid">
+    <div class="metric-card green">
+      <div class="metric-icon">🌱</div>
+      <div class="metric-label">Annual Ecosystem Value</div>
+      <div class="metric-value green">${fmt(val.annual_value_mid)}</div>
+      <div class="metric-sub">${fmt(val.annual_value_mid / val.area_hectares)}/ha/yr · ${val.regional_multiplier}× regional</div>
+    </div>
+    <div class="metric-card blue">
+      <div class="metric-icon">📈</div>
+      <div class="metric-label">${val.projection_years}-Year NPV</div>
+      <div class="metric-value blue">${fmt(val.npv)}</div>
+      <div class="metric-sub">At ${(val.discount_rate*100).toFixed(0)}% discount rate</div>
+    </div>
+    <div class="metric-card gold">
+      <div class="metric-icon">☁️</div>
+      <div class="metric-label">Carbon Sequestered/yr</div>
+      <div class="metric-value gold">${val.carbon_annual_tonnes.toLocaleString('en-IN')} t</div>
+      <div class="metric-sub">${fmt(val.carbon_annual_value_inr)} carbon value</div>
+    </div>
+    <div class="metric-card red">
+      <div class="metric-icon">⚠️</div>
+      <div class="metric-label">Loss if Developed</div>
+      <div class="metric-value red">-${fmt(oppCost)}</div>
+      <div class="metric-sub">Ecosystem NPV destroyed</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Services Breakdown</div>
+      <div class="chart-sub">Annual value contribution by ecosystem service</div>
+      <div class="chart-wrap"><canvas id="svcChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Scenario Comparison</div>
+      <div class="chart-sub">${val.projection_years}-year combined NPV (ecosystem + revenue)</div>
+      <div class="chart-wrap"><canvas id="scnChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Services Table -->
+  <div class="table-card">
+    <div class="chart-title">Ecosystem Service Detail</div>
+    <div class="chart-sub">All values INR/ha/yr · Sources: TEEB India, FSI ISFR 2023, TERI, MoEFCC</div>
+    <table class="services-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>₹/ha/yr (Mid)</th>
+          <th>Total for ${val.area_hectares}ha</th>
+          <th>Share</th>
+          <th>Valuation Method</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${val.services.sort((a,b) => b.total_for_area - a.total_for_area).map(s => `
+        <tr>
+          <td style="font-weight:500">${s.service_name}</td>
+          <td style="font-family:'JetBrains Mono',monospace;color:var(--leaf)">₹${Math.round(s.adjusted_value).toLocaleString('en-IN')}</td>
+          <td style="font-family:'JetBrains Mono',monospace;color:var(--text);font-weight:500">${fmt(s.total_for_area)}</td>
+          <td>
+            <div class="svc-bar-wrap">
+              <div class="svc-bar" style="width:${Math.max(4, s.contribution_pct)}px"></div>
+              <span style="font-size:11px;color:var(--muted)">${s.contribution_pct}%</span>
+            </div>
+          </td>
+          <td style="font-size:11px;color:var(--muted)">${s.method || '—'}</td>
+          <td style="font-size:10px;color:var(--muted)">${s.source || '—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Scenario Cards -->
+  <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--sage);margin-bottom:12px">
+    Land Use Scenario Comparison
+  </div>
+  <div class="scenarios-grid">
+    ${scn.scenarios.sort((a,b) => b.combined_npv - a.combined_npv).map(s => {
+      const cls = s.ecosystem_loss_pct < 20 ? 'npv-green' : s.ecosystem_loss_pct < 60 ? 'npv-gold' : 'npv-red'
+      const lossCls = s.ecosystem_loss_pct > 60 ? 'loss-high' : s.ecosystem_loss_pct > 30 ? 'loss-mid' : 'loss-low'
+      return `
+      <div class="scenario-card">
+        <div class="scenario-name">${s.scenario_name}</div>
+        <div class="scenario-type">Combined ${val.projection_years}-yr NPV</div>
+        <div class="scenario-npv ${cls}">${fmt(s.combined_npv)}</div>
+        <div class="scenario-breakdown">
+          <span style="color:var(--leaf)">🌿 ${fmt(s.ecosystem_npv)}</span> &nbsp;
+          <span style="color:var(--gold)">💰 ${fmt(s.revenue_npv)}</span>
+        </div>
+        <span class="scenario-loss ${lossCls}">
+          ${s.ecosystem_loss_pct > 0 ? `⚠ ${s.ecosystem_loss_pct.toFixed(0)}% ecosystem lost` : `✓ ${s.ecosystem_retained_pct.toFixed(0)}% retained`}
+        </span>
+      </div>`
+    }).join('')}
+  </div>
+
+  <!-- Index Bars -->
+  <div class="indices-row">
+    <div class="index-card">
+      <div class="index-header">
+        <div class="index-label">Climate Resilience Index</div>
+        <div class="index-score" style="color:${val.climate_resilience_score > 70 ? 'var(--leaf)' : val.climate_resilience_score > 40 ? 'var(--gold)' : 'var(--red)'}">
+          ${val.climate_resilience_score}/100
+        </div>
+      </div>
+      <div class="index-track">
+        <div class="index-fill" style="width:${val.climate_resilience_score}%;background:linear-gradient(90deg,#1565c0,#42a5f5)"></div>
+      </div>
+      <div class="index-sub">Contribution to climate adaptation and flood resilience</div>
+    </div>
+    <div class="index-card">
+      <div class="index-header">
+        <div class="index-label">Biodiversity Index</div>
+        <div class="index-score" style="color:${val.biodiversity_index > 70 ? 'var(--leaf)' : val.biodiversity_index > 40 ? 'var(--gold)' : 'var(--red)'}">
+          ${val.biodiversity_index}/100
+        </div>
+      </div>
+      <div class="index-track">
+        <div class="index-fill" style="width:${val.biodiversity_index}%;background:linear-gradient(90deg,var(--forest),var(--leaf))"></div>
+      </div>
+      <div class="index-sub">Relative habitat quality and species richness support</div>
+    </div>
+  </div>
+
+  <!-- Impact Cards -->
+  <div class="impact-section">
+    <div class="impact-title">▸ Human-Scale Impact Metrics</div>
+    <div class="impact-grid" id="impactGrid">
+      <div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:20px;font-size:12px">Loading impact metrics...</div>
+    </div>
+  </div>
+
+  <!-- Live Ticker -->
+  <div class="ticker-section">
+    <div class="impact-title">▸ Session Activity</div>
+    <div class="ticker-container">
+      <div class="ticker-header">📡 Real-Time Valuations</div>
+      <div class="ticker-list" id="tickerList">
+        <div class="ticker-empty">Calculating first valuation...</div>
+      </div>
+    </div>
+  </div>`
+
+  document.getElementById('mainContent').innerHTML = html
+  renderCharts(val, scn)
+  loadImpactCards(val)
+}
+
+// ── IMPACT METRICS ──────────────────────────────────────────────────────────
+async function loadImpactCards(valData) {
+  try {
+    const res = await fetch(`${BASE}/api/v1/impact`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(valData)
+    }).then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.detail) }))
+
+    const grid = document.getElementById('impactGrid')
+    if (!grid) return
+
+    grid.innerHTML = res.impacts.map(card => `
+      <div class="impact-card">
+        <div class="impact-icon">${card.icon}</div>
+        <div class="impact-metric">${card.metric}</div>
+        <div class="impact-label">${card.label}</div>
+        <div class="impact-source">${card.source}</div>
+      </div>
+    `).join('')
+
+  } catch(err) {
+    console.error('Impact loading error:', err)
+    const grid = document.getElementById('impactGrid')
+    if (grid) grid.innerHTML = `<div style="grid-column:1/-1;color:var(--red);font-size:12px">⚠ Could not load impact metrics: ${err.message}</div>`
+  }
+}
+
+// ── LIVE TICKER ─────────────────────────────────────────────────────────────
+function addTickerItem(val) {
+  const list = document.getElementById('tickerList')
+  if (!list) return
+
+  // Remove empty state if present
+  if (list.querySelector('.ticker-empty')) {
+    list.innerHTML = ''
+  }
+
+  const now = new Date()
+  const time = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+
+  const item = document.createElement('div')
+  item.className = 'ticker-item'
+  item.innerHTML = `
+    <div>
+      <div class="ticker-location">${val.location_name || val.ecosystem_name}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">${val.area_hectares} ha • ${val.region}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="ticker-value">${fmt(val.annual_value_mid)}/yr</div>
+      <div class="ticker-time">${time}</div>
+    </div>
+  `
+
+  list.insertBefore(item, list.firstChild)
+
+  // Keep only last 15 items
+  while (list.children.length > 15) {
+    list.removeChild(list.lastChild)
+  }
+}
+
+// ── WEBSOCKET CONNECTION (for real-time updates) ──────────────────────────────
+let ws = null
+
+function initWebSocket() {
+  try {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${protocol}//${window.location.host}/api/v1/ws/ticker`)
+
+    ws.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data)
+        if (msg.type === 'valuation' && msg.data) {
+          addTickerItem(msg.data)
+        } else if (msg.type === 'stats' && msg.data) {
+          updateGlobalStats(msg.data)
+        }
+      } catch (err) {
+        console.error('WebSocket message parse error:', err)
+      }
+    }
+
+    ws.onerror = (err) => console.log('WebSocket error:', err)
+    ws.onclose = () => console.log('WebSocket closed')
+  } catch (err) {
+    console.log('WebSocket connection failed (offline mode):', err)
+  }
+}
+
+function updateGlobalStats(stats) {
+  document.getElementById('gCount').textContent = stats.count;
+  document.getElementById('gArea').textContent = Math.round(stats.area).toLocaleString() + ' ha';
+  document.getElementById('gValue').textContent = fmt(stats.value);
+  document.getElementById('gCarbon').textContent = Math.round(stats.carbon).toLocaleString() + ' t';
+}
+
+// Initialize WebSocket on page load
+initWebSocket()
+
+// ── CHARTS ──────────────────────────────────────────────────────────────────
+function renderCharts(val, scn) {
+  const sorted = [...val.services].sort((a,b) => b.total_for_area - a.total_for_area)
+
+  new Chart(document.getElementById('svcChart'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(s => s.service_name),
+      datasets: [{
+        data: sorted.map(s => +(s.total_for_area / 1e5).toFixed(2)),
+        backgroundColor: ['#2d7a4f','#5a9e6f','#8cc97e','#0288d1','#1565c0','#f9a825','#a0522d','#e65100','#4caf50'],
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => '₹' + c.raw + ' L' } } },
+      scales: {
+        x: { ticks: { color: '#7aad85', font: { size: 9 }, maxRotation: 40 }, grid: { color: '#1a3325' } },
+        y: { ticks: { color: '#7aad85', font: { size: 9 }, callback: v => '₹'+v+'L' }, grid: { color: '#1a3325' } }
+      }
+    }
+  })
+
+  new Chart(document.getElementById('scnChart'), {
+    type: 'bar',
+    data: {
+      labels: scn.scenarios.map(s => s.scenario_name.split(' ').slice(0,2).join(' ')),
+      datasets: [
+        { label: 'Ecosystem NPV', data: scn.scenarios.map(s => +(s.ecosystem_npv/1e7).toFixed(1)), backgroundColor: '#5a9e6fcc', borderRadius: 4 },
+        { label: 'Revenue NPV',   data: scn.scenarios.map(s => +(s.revenue_npv/1e7).toFixed(1)),   backgroundColor: '#f9a825aa', borderRadius: 4 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#7aad85', font: { size: 10 } } }, tooltip: { callbacks: { label: c => '₹'+c.raw+' Cr' } } },
+      scales: {
+        x: { ticks: { color: '#7aad85', font: { size: 9 }, maxRotation: 30 }, grid: { color: '#1a3325' } },
+        y: { ticks: { color: '#7aad85', font: { size: 9 }, callback: v => '₹'+v+'Cr' }, grid: { color: '#1a3325' } }
+      }
+    }
+  })
+}
+
+// ── AI NARRATIVE ─────────────────────────────────────────────────────────────
+async function generateNarrative() {
+  document.getElementById('narrativeModal').classList.add('open')
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-loading">
+      <div class="spinner"></div>
+      <p>Generating policy brief with RAG + Groq AI...<br><span style="opacity:0.5;font-size:11px">Retrieving relevant Indian case studies and coefficients</span></p>
+    </div>`
+
+  try {
+    const req = {
+      valuation_result: currentValuation,
+      scenario_results: currentScenarios?.scenarios || null,
+      location_name: document.getElementById('locationName').value || null,
+    }
+
+    const res = await fetch(`${BASE}/api/v1/report/narrative`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(req)
+    }).then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.detail) }))
+
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-title">AI Policy Brief</div>
+      <div class="modal-sub">▸ RAG-grounded · Llama 3.1 70B via Groq · Indian research data</div>
+      <div class="narrative-text">${res.narrative.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
+
+      ${res.key_findings?.length ? `
+      <div class="findings-section">
+        <div class="findings-title">Key Findings</div>
+        ${res.key_findings.map((f,i) => `
+          <div class="finding-item">
+            <span class="finding-num">${i+1}.</span>
+            <span>${f}</span>
+          </div>`).join('')}
+      </div>` : ''}
+
+      ${res.policy_recommendations?.length ? `
+      <div class="findings-section">
+        <div class="findings-title">Policy Recommendations</div>
+        ${res.policy_recommendations.map(r => `<div class="reco-item">→ ${r}</div>`).join('')}
+      </div>` : ''}`
+
+  } catch(err) {
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-title" style="color:#ef9a9a">Could not generate narrative</div>
+      <p style="color:var(--muted);font-size:13px;margin-top:12px">${err.message}</p>
+      <p style="color:var(--muted);font-size:12px;margin-top:12px">Make sure GROQ_API_KEY is set in your .env file. Get a free key at <a href="https://console.groq.com" target="_blank" style="color:var(--sage)">console.groq.com</a></p>`
+  }
+}
+
+function closeModal() { document.getElementById('narrativeModal').classList.remove('open') }
+document.getElementById('narrativeModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal()
+})
+
+// ── PDF DOWNLOAD ─────────────────────────────────────────────────────────────
+async function downloadPDF() {
+  const btn = document.getElementById('pdfBtn')
+  btn.disabled = true; btn.textContent = '⏳ Generating PDF...'
+
+  try {
+    const req = {
+      valuation_result: currentValuation,
+      scenario_results: currentScenarios?.scenarios || null,
+      location_name: document.getElementById('locationName').value || null,
+      prepared_for: null,
+    }
+
+    const res = await fetch(`${BASE}/api/v1/report/pdf/download`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(req)
+    })
+
+    if (!res.ok) throw new Error('PDF generation failed')
+
+    const blob = await res.blob()
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    const filename = res.headers.get('Content-Disposition')?.match(/filename="(.+)"/)?.[1] || 'ecovalue_report.pdf'
+    a.href = url; a.download = filename; a.click()
+    URL.revokeObjectURL(url)
+    showToast('PDF downloaded')
+
+  } catch(err) {
+    showToast(err.message, 'error')
+  }
+
+  btn.disabled = false; btn.textContent = '📄 Download PDF Report'
+}
+</script>
+</body>
+</html>

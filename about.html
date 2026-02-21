@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — EcoValue India</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@300;400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0a1a0d; --forest:#1a4a28; --moss:#2d6e42; --leaf:#4a9e5c;
+  --sage:#7ec89a; --mist:#c8ecd4; --cream:#f5f0e8; --gold:#c8a84b;
+  --paper:#faf7f2; --white:#ffffff;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:var(--paper);color:var(--ink);}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(245,240,232,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,110,66,0.15);}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);}
+.nav-leaf{width:36px;height:36px;background:linear-gradient(135deg,var(--forest),var(--leaf));border-radius:50% 8px 50% 8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.nav-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--forest);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--ink);font-size:14px;font-weight:500;opacity:0.7;transition:opacity 0.2s;}
+.nav-links a:hover,.nav-links a.active{opacity:1;color:var(--forest);}
+.nav-cta{background:var(--forest) !important;color:var(--cream) !important;padding:10px 24px !important;border-radius:6px !important;opacity:1 !important;font-weight:600 !important;}
+
+/* Hero */
+.about-hero{padding:100px 48px 80px;max-width:800px;margin:0 auto;text-align:center;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--leaf);margin-bottom:16px;}
+.about-title{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,58px);font-weight:900;line-height:1.1;margin-bottom:20px;}
+.about-title em{font-style:italic;color:var(--forest);}
+.about-lead{font-size:18px;line-height:1.75;color:rgba(10,26,13,0.65);max-width:640px;margin:0 auto;}
+
+/* ── IMPACT CARDS ── */
+.impact-section { margin-top:40px; margin-bottom:40px; }
+.impact-title { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--leaf); margin-bottom:16px; }
+.impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.impact-card { background:var(--paper); border:1px solid rgba(45,110,66,0.2); border-radius:10px; padding:18px; transition:all 0.3s ease; }
+.impact-card:hover { transform:translateY(-3px); border-color:var(--leaf); box-shadow:0 4px 16px rgba(74,158,92,0.15); }
+.impact-icon { font-size:32px; margin-bottom:10px; }
+.impact-metric { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:4px; color:var(--forest); }
+.impact-label { font-size:12px; color:var(--ink); opacity:0.7; line-height:1.3; margin-bottom:8px; }
+.impact-source { font-size:10px; color:var(--ink); opacity:0.5; padding-top:8px; border-top:1px solid rgba(45,110,66,0.15); font-family:'JetBrains Mono',monospace; margin-top:8px; }
+
+/* ── LIVE TICKER ── */
+.ticker-section { margin-top:40px; margin-bottom:40px; }
+.ticker-container { background:var(--cream); border:1px solid rgba(45,110,66,0.2); border-radius:10px; overflow:hidden; }
+.ticker-header { background:var(--paper); padding:14px 16px; border-bottom:1px solid rgba(45,110,66,0.2); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--leaf); }
+.ticker-list { max-height:300px; overflow-y:auto; }
+.ticker-item { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid rgba(45,110,66,0.1); font-size:11px; }
+.ticker-item:last-child { border-bottom:none; }
+.ticker-location { font-weight:600; color:var(--forest); }
+.ticker-value { color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10px; }
+.ticker-time { color:var(--ink); opacity:0.5; font-size:9px; margin-top:2px; }
+.ticker-empty { padding:24px; text-align:center; color:var(--ink); opacity:0.5; font-style:italic; font-size:12px; }
+
+
+/* Problem quote */
+.quote-section{background:var(--ink);padding:80px 48px;text-align:center;}
+.quote{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,34px);font-style:italic;color:#e8f5e9;line-height:1.5;max-width:720px;margin:0 auto 20px;}
+.quote-attr{font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(200,236,212,0.5);letter-spacing:2px;}
+
+/* Methodology */
+.method-section{padding:100px 48px;max-width:1100px;margin:0 auto;}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--leaf);margin-bottom:16px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,44px);font-weight:700;margin-bottom:40px;line-height:1.2;}
+
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.method-card{background:white;border-radius:16px;padding:32px;border:1px solid rgba(45,110,66,0.1);position:relative;overflow:hidden;}
+.method-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--forest),var(--leaf));}
+.method-num{font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:rgba(26,74,40,0.08);line-height:1;margin-bottom:-8px;}
+.method-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:12px;}
+.method-body{font-size:14px;line-height:1.7;color:rgba(10,26,13,0.65);}
+
+/* RAG explanation */
+.rag-section{background:var(--cream);padding:80px 48px;border-top:1px solid rgba(45,110,66,0.1);border-bottom:1px solid rgba(45,110,66,0.1);}
+.rag-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.rag-visual{background:white;border-radius:16px;padding:32px;border:1px solid rgba(45,110,66,0.15);}
+.rag-flow{display:flex;flex-direction:column;gap:0;}
+.rag-step{display:flex;gap:16px;align-items:flex-start;}
+.rag-line{display:flex;flex-direction:column;align-items:center;}
+.rag-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:2px solid;}
+.rag-connector{width:2px;flex:1;min-height:20px;margin:4px 0;}
+.rag-step:last-child .rag-connector{display:none;}
+.rag-text{padding:4px 0 20px;}
+.rag-step-title{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:4px;}
+.rag-step-desc{font-size:12px;color:rgba(10,26,13,0.55);line-height:1.5;}
+
+/* Data sources deep dive */
+.sources-section{padding:100px 48px;max-width:1100px;margin:0 auto;}
+.source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;}
+.source-card{background:white;border-radius:12px;padding:24px;border:1px solid rgba(45,110,66,0.1);}
+.source-logo{font-size:28px;margin-bottom:12px;}
+.source-name{font-weight:700;font-size:14px;color:var(--ink);margin-bottom:6px;}
+.source-desc{font-size:12px;color:rgba(10,26,13,0.55);line-height:1.6;}
+.source-services{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px;}
+.source-tag{font-size:10px;padding:2px 8px;background:rgba(45,110,66,0.08);color:var(--forest);border-radius:20px;}
+
+/* Case studies */
+.cases-section{background:var(--ink);padding:100px 48px;}
+.cases-inner{max-width:1100px;margin:0 auto;}
+.cases-section .section-title{color:#e8f5e9;margin-bottom:40px;}
+.cases-section .section-label{color:#5a9e6f;}
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.case-card{background:rgba(255,255,255,0.04);border:1px solid rgba(126,200,154,0.15);border-radius:12px;padding:24px;}
+.case-eco{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#5a9e6f;font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
+.case-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#e8f5e9;margin-bottom:12px;}
+.case-body{font-size:13px;line-height:1.65;color:rgba(200,236,212,0.6);}
+.case-outcome{margin-top:14px;padding:10px 14px;background:rgba(90,158,111,0.1);border-left:2px solid #5a9e6f;border-radius:4px;font-size:12px;color:#8cc97e;}
+
+/* API section */
+.api-section{padding:80px 48px;max-width:1100px;margin:0 auto;}
+.api-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;}
+.endpoint-card{background:white;border-radius:12px;padding:20px;border:1px solid rgba(45,110,66,0.1);}
+.ep-method{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:8px;}
+.ep-get{background:rgba(45,110,66,0.1);color:var(--forest);}
+.ep-post{background:rgba(200,168,75,0.1);color:#c8a84b;}
+.ep-path{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:6px;}
+.ep-desc{font-size:12px;color:rgba(10,26,13,0.55);}
+
+/* CTA */
+.about-cta{text-align:center;padding:100px 48px;}
+.about-cta .section-title{max-width:600px;margin:0 auto 16px;}
+.about-cta .about-lead{margin-bottom:40px;}
+.btn-primary{background:var(--forest);color:var(--cream);padding:16px 36px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:var(--moss);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,74,40,0.25);}
+
+footer{background:var(--ink);color:rgba(200,236,212,0.5);padding:48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.footer-brand{font-family:'Playfair Display',serif;font-size:18px;color:#e8f5e9;}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+.footer-links a{color:rgba(200,236,212,0.5);text-decoration:none;font-size:13px;transition:color 0.2s;}
+.footer-links a:hover{color:#7ec89a;}
+
+@media(max-width:900px){
+  nav{padding:16px 24px;}
+  .nav-links{display:none;}
+  .method-grid,.rag-inner,.source-grid,.case-grid,.api-grid{grid-template-columns:1fr;}
+  .about-hero,.method-section,.sources-section,.cases-section,.api-section,.about-cta{padding:60px 24px;}
+  .quote-section,.rag-section{padding:60px 24px;}
+}
+
+/* ── IMPACT CARDS ── */
+.impact-section { margin-top:40px; margin-bottom:40px; }
+.impact-title { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--sage); margin-bottom:16px; }
+.impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.impact-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; transition:all 0.3s ease; animation:slideIn 0.4s ease forwards; }
+.impact-card:hover { transform:translateY(-3px); border-color:var(--leaf); box-shadow:0 4px 16px rgba(140,201,126,0.1); }
+@keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.impact-icon { font-size:32px; margin-bottom:10px; }
+.impact-metric { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:4px; }
+.impact-label { font-size:12px; color:var(--muted); line-height:1.3; margin-bottom:8px; }
+.impact-source { font-size:10px; color:var(--border); padding-top:8px; border-top:1px solid var(--border); font-family:'JetBrains Mono',monospace; margin-top:8px; }
+
+/* ── LIVE TICKER ── */
+.ticker-section { margin-top:40px; }
+.ticker-container { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.ticker-header { background:var(--card); padding:14px 16px; border-bottom:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--sage); }
+.ticker-list { max-height:300px; overflow-y:auto; }
+.ticker-item { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid rgba(35,61,42,0.3); font-size:11px; animation:slideInLeft 0.3s ease; }
+.ticker-item:last-child { border-bottom:none; }
+@keyframes slideInLeft { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+.ticker-location { font-weight:600; color:var(--leaf); }
+.ticker-meta { color:var(--muted); margin:0 8px; }
+.ticker-value { color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10px; }
+.ticker-time { color:var(--border); font-size:9px; margin-top:2px; }
+.ticker-empty { padding:24px; text-align:center; color:var(--muted); font-style:italic; font-size:12px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">
+    <div class="nav-leaf">🌿</div>
+    <span class="nav-title">PrakritiROI</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="history.html">History</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="dashboard.html" class="nav-cta">Open Dashboard →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="eyebrow">About the Project</div>
+  <h1 class="about-title">Built to make <em>nature count</em> on every balance sheet</h1>
+  <p class="about-lead">
+    EcoValue India is an open-source ecosystem services valuation engine built for Indian policymakers, planners, and communities — powered by peer-reviewed Indian research, RAG-enhanced AI, and a FastAPI backend.
+  </p>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="quote">"India loses an estimated ₹7 lakh crore annually from ecosystem degradation — simply because those services never appear on balance sheets."</div>
+  <div class="quote-attr">— Pavan Sukhdev · TEEB India · 2008</div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="method-section">
+  <div class="section-label">Methodology</div>
+  <h2 class="section-title">How we calculate ecosystem value</h2>
+  <div class="method-grid">
+    <div class="method-card">
+      <div class="method-num">01</div>
+      <div class="method-title">Replacement Cost Method</div>
+      <div class="method-body">For water filtration and flood control: we calculate the cost of replacing the ecosystem service with engineered infrastructure. A 1 ha wetland providing flood buffering for 7 ha downstream is valued at the avoided damage cost.</div>
+    </div>
+    <div class="method-card">
+      <div class="method-num">02</div>
+      <div class="method-title">Social Cost of Carbon</div>
+      <div class="method-body">Carbon sequestration is valued using India's social cost of carbon (₹3,500/tonne) or voluntary market prices (₹2,200/tonne). Rates sourced from MoEFCC NATCOM and FSI ISFR 2023 carbon stock data.</div>
+    </div>
+    <div class="method-card">
+      <div class="method-num">03</div>
+      <div class="method-title">Willingness-to-Pay Studies</div>
+      <div class="method-body">Biodiversity and recreation values use WTP surveys from ATREE, TERI, and Hussain & Badola (2010) across Indian communities. Regional variation is captured through 9 regional multipliers.</div>
+    </div>
+    <div class="method-card">
+      <div class="method-num">04</div>
+      <div class="method-title">Market Price Method</div>
+      <div class="method-body">Fisheries, timber, and NWFP services use prevailing market prices from CMFRI, FSI, and state fisheries departments. Pollination is valued at crop production value × dependency ratio (TERI 2016).</div>
+    </div>
+  </div>
+</section>
+
+<!-- RAG EXPLANATION -->
+<section class="rag-section">
+  <div class="rag-inner">
+    <div>
+      <div class="section-label">AI Architecture</div>
+      <h2 class="section-title" style="font-size:32px">RAG-grounded policy narratives</h2>
+      <p style="font-size:15px;line-height:1.75;color:rgba(10,26,13,0.65);margin-bottom:20px">
+        Our AI narratives don't hallucinate numbers. Before generating any policy brief, the system retrieves the most relevant documents from a 91-document knowledge base built directly from your coefficient database, real Indian case studies, and policy frameworks.
+      </p>
+      <p style="font-size:15px;line-height:1.75;color:rgba(10,26,13,0.65)">
+        The result: policy briefs that automatically cite Chilika Lake precedents, Sundarbans cyclone data, and India NDC commitments — grounded in the same data used by TERI and MoEFCC.
+      </p>
+    </div>
+    <div class="rag-visual">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--leaf);margin-bottom:20px">RAG Pipeline</div>
+      <div class="rag-flow">
+        <div class="rag-step">
+          <div class="rag-line">
+            <div class="rag-dot" style="background:rgba(26,74,40,0.08);border-color:var(--forest)">🌿</div>
+            <div class="rag-connector" style="background:rgba(45,110,66,0.2)"></div>
+          </div>
+          <div class="rag-text">
+            <div class="rag-step-title">User inputs land parcel</div>
+            <div class="rag-step-desc">Ecosystem type, area, region, location name</div>
+          </div>
+        </div>
+        <div class="rag-step">
+          <div class="rag-line">
+            <div class="rag-dot" style="background:rgba(200,168,75,0.08);border-color:var(--gold)">🔍</div>
+            <div class="rag-connector" style="background:rgba(45,110,66,0.2)"></div>
+          </div>
+          <div class="rag-text">
+            <div class="rag-step-title">Vector search — top 8 docs retrieved</div>
+            <div class="rag-step-desc">TF-IDF cosine similarity across 91 indexed documents: coefficients, case studies, policy frameworks</div>
+          </div>
+        </div>
+        <div class="rag-step">
+          <div class="rag-line">
+            <div class="rag-dot" style="background:rgba(2,136,209,0.08);border-color:#0288d1">📋</div>
+            <div class="rag-connector" style="background:rgba(45,110,66,0.2)"></div>
+          </div>
+          <div class="rag-text">
+            <div class="rag-step-title">Context injected into prompt</div>
+            <div class="rag-step-desc">Retrieved data + valuation results form the grounded prompt sent to Groq</div>
+          </div>
+        </div>
+        <div class="rag-step">
+          <div class="rag-line">
+            <div class="rag-dot" style="background:rgba(45,110,66,0.1);border-color:var(--leaf)">✨</div>
+            <div class="rag-connector" style="display:none"></div>
+          </div>
+          <div class="rag-text">
+            <div class="rag-step-title">Llama 3.1 70B generates brief</div>
+            <div class="rag-step-desc">Policy narrative + key findings + recommendations, all citing your actual data</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA SOURCES -->
+<section class="sources-section">
+  <div class="section-label">Data Provenance</div>
+  <h2 class="section-title">Coefficient sources</h2>
+  <div class="source-grid">
+    <div class="source-card">
+      <div class="source-logo">📗</div>
+      <div class="source-name">TEEB India — Sukhdev et al. 2008</div>
+      <div class="source-desc">The Economics of Ecosystems and Biodiversity India study. Primary source for ₹/ha/yr values across all ecosystem types and service categories.</div>
+      <div class="source-services"><span class="source-tag">All services</span><span class="source-tag">Biodiversity</span><span class="source-tag">Carbon</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">🌲</div>
+      <div class="source-name">FSI ISFR 2023</div>
+      <div class="source-desc">Forest Survey of India — India State of Forest Report 2023. State-wise carbon stock in tonnes/hectare, directly usable as carbon coefficients.</div>
+      <div class="source-services"><span class="source-tag">Carbon sequestration</span><span class="source-tag">Timber</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">🔬</div>
+      <div class="source-name">TERI Ecosystem Publications</div>
+      <div class="source-desc">The Energy and Resources Institute. Multiple ecosystem valuation studies for Indian wetlands, forests, and agricultural land.</div>
+      <div class="source-services"><span class="source-tag">Water regulation</span><span class="source-tag">Pollination</span><span class="source-tag">Flood</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">🏛</div>
+      <div class="source-name">MoEFCC NATCOM UNFCCC</div>
+      <div class="source-desc">India's National Communication to UNFCCC. Official carbon sequestration estimates by ecosystem type, used for carbon pricing validation.</div>
+      <div class="source-services"><span class="source-tag">Carbon pricing</span><span class="source-tag">NDC alignment</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">🦅</div>
+      <div class="source-name">Hussain & Badola 2010</div>
+      <div class="source-desc">Wetland ecosystem services valuation in Indian context. Published in Wetlands Ecology and Management — primary source for wetland flood control and water filtration values.</div>
+      <div class="source-services"><span class="source-tag">Wetlands</span><span class="source-tag">Flood control</span><span class="source-tag">Biodiversity</span></div>
+    </div>
+    <div class="source-card">
+      <div class="source-logo">🌿</div>
+      <div class="source-name">ATREE + CPR India + CMFRI</div>
+      <div class="source-desc">Ashoka Trust for Research (Western Ghats biodiversity), Centre for Policy Research (urban ecosystem services), CMFRI (fisheries valuation).</div>
+      <div class="source-services"><span class="source-tag">Western Ghats</span><span class="source-tag">Urban</span><span class="source-tag">Fisheries</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section class="cases-section">
+  <div class="cases-inner">
+    <div class="section-label">Case Studies in RAG Index</div>
+    <h2 class="section-title">Real Indian decisions that inform our AI</h2>
+    <div class="case-grid">
+      <div class="case-card">
+        <div class="case-eco">Inland Wetland · Odisha</div>
+        <div class="case-title">Chilika Lake: Conservation vs Prawn Aquaculture</div>
+        <div class="case-body">India's largest coastal lagoon. 200,000 fisher families. Commercial aquaculture offered ₹25,000/ha lease. TERI valuation showed ecosystem value at 3.2× aquaculture revenue over 10 years.</div>
+        <div class="case-outcome">✅ Outcome: Conservation chosen after full ecosystem accounting</div>
+      </div>
+      <div class="case-card">
+        <div class="case-eco">Tropical Moist Forest · Western Ghats</div>
+        <div class="case-title">Western Ghats: Forest vs Iron Ore Mining</div>
+        <div class="case-body">Forest ecosystem value ₹8.7L/ha/yr vs mining royalty ₹4.5L/ha/yr. 10-year NPV forest: ₹58L/ha. Mining: ₹30L/ha. Net loss if mined: ₹28L/ha over decade.</div>
+        <div class="case-outcome">✅ Outcome: Mining moratorium upheld by Supreme Court 2012</div>
+      </div>
+      <div class="case-card">
+        <div class="case-eco">Mangroves · West Bengal</div>
+        <div class="case-title">Sundarbans: Mangrove vs Industrial Port</div>
+        <div class="case-body">800 ha mangrove proposed for port expansion. Annual ecosystem loss ₹720 crore vs port revenue ₹200 crore. Cyclone Amphan 2020: mangroves reduced impact by 40% saving ₹40,000 crore in damage.</div>
+        <div class="case-outcome">⚠ Outcome: Conservation strongly recommended by WII 2021</div>
+      </div>
+      <div class="case-card">
+        <div class="case-eco">Urban Green · Karnataka</div>
+        <div class="case-title">Bengaluru: Urban Lake vs IT Park</div>
+        <div class="case-body">45 ha urban lake vs IT park. Apparent gap: ₹172 Cr over 10 years. When stormwater, AC energy, health, and flood costs added: advantage drops to just ₹26 Cr. 2022 floods cost ₹400 crore.</div>
+        <div class="case-outcome">📊 Outcome: True cost accounting closes the apparent development advantage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API -->
+<section class="api-section">
+  <div class="section-label">Open API</div>
+  <h2 class="section-title">Built on a fully open REST API</h2>
+  <p style="font-size:15px;color:rgba(10,26,13,0.65);max-width:600px;margin-bottom:8px">Every feature is accessible via API. Integrate EcoValue India into your own planning tools, GIS systems, or dashboards.</p>
+  <a href="http://localhost:8000/docs" target="_blank" style="font-size:13px;color:var(--forest);font-weight:600">View Swagger Docs →</a>
+  <div class="api-grid">
+    <div class="endpoint-card">
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/api/v1/valuate</div>
+      <div class="ep-desc">Full ecosystem services valuation with NPV, carbon, and service breakdown. Saved to database automatically.</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/api/v1/scenarios/compare</div>
+      <div class="ep-desc">Compare up to 6 land use scenarios — preserve, restore, solar, agriculture, development, industrial.</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/api/v1/report/narrative</div>
+      <div class="ep-desc">RAG-grounded AI policy brief using Groq + Llama 3.1 70B. Key findings and recommendations structured JSON.</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-post">POST</span>
+      <div class="ep-path">/api/v1/report/pdf/download</div>
+      <div class="ep-desc">Professional PDF policy report with metrics, services table, scenario comparison, and AI narrative.</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/api/v1/history</div>
+      <div class="ep-desc">Paginated history of all valuations. Filter by ecosystem type and region.</div>
+    </div>
+    <div class="endpoint-card">
+      <span class="ep-method ep-get">GET</span>
+      <div class="ep-path">/api/v1/rag/search?q=...</div>
+      <div class="ep-desc">Search the RAG knowledge base directly. See what context the AI retrieves for any query.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Impact & Ticker Demo -->
+<section class="about-section">
+  <div class="impact-section" style="max-width:1000px;margin:0 auto">
+    <div class="impact-title">▸ Example Impact Metrics</div>
+    <div class="impact-grid" id="impactGrid">
+      <div style="grid-column:1/-1;text-align:center;color:var(--ink);opacity:0.5;padding:20px;font-size:12px">Loading example impact metrics...</div>
+    </div>
+  </div>
+
+  <div class="ticker-section" style="max-width:1000px;margin:0 auto">
+    <div class="impact-title">▸ Recent Valuations</div>
+    <div class="ticker-container">
+      <div class="ticker-header">📡 Real-Time Activity</div>
+      <div class="ticker-list" id="tickerList">
+        <div class="ticker-empty">Fetching recent valuations...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta">
+  <div class="section-label">Get Started</div>
+  <h2 class="section-title">Try it on your land parcel</h2>
+  <p class="about-lead">Takes 30 seconds. No signup required. Download a PDF policy report immediately.</p>
+  <a href="dashboard.html" class="btn-primary">Open Valuation Dashboard →</a>
+</section>
+
+<footer>
+  <div>
+    <div class="footer-brand">🌿 EcoValue India</div>
+    <div style="margin-top:6px;font-size:13px">Open source · Built for Indian policymakers</div>
+  </div>
+  <div class="footer-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="history.html">History</a>
+    <a href="http://localhost:8000/docs" target="_blank">API Docs</a>
+  </div>
+  <div style="font-size:12px">Data: TEEB India · FSI ISFR 2023 · TERI · MoEFCC</div>
+</footer>
+
+<script>
+const BASE = 'http://localhost:8000'
+
+async function loadExampleImpact() {
+  try {
+    const sample = {
+      ecosystem_name: "Inland Wetlands",
+      area_hectares: 250,
+      annual_value_mid: 45000000,
+      npv: 302145000,
+      carbon_annual_tonnes: 1187.5,
+      biodiversity_index: 82
+    }
+    const res = await fetch(`${BASE}/api/v1/impact`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(sample)
+    }).then(r => r.json())
+
+    const grid = document.getElementById('impactGrid')
+    grid.innerHTML = res.map(card => `
+      <div class="impact-card">
+        <div class="impact-icon">${card.icon}</div>
+        <div class="impact-metric">${card.metric}</div>
+        <div class="impact-label">${card.label}</div>
+        <div class="impact-source">${card.source}</div>
+      </div>
+    `).join('')
+  } catch(err) {
+    console.log('Could not load impact examples')
+  }
+}
+
+async function loadRecentValuations() {
+  try {
+    const res = await fetch(`${BASE}/api/v1/history?limit=5`)
+    if (res.ok) {
+      const data = await res.json()
+      const list = document.getElementById('tickerList')
+      list.innerHTML = data.results.slice(0, 5).map(r => `
+        <div class="ticker-item">
+          <div>
+            <div class="ticker-location">${r.location_name || r.ecosystem_name}</div>
+            <div style="font-size:10px;color:var(--ink);opacity:0.6;margin-top:2px">${r.area_hectares} ha</div>
+          </div>
+          <div style="text-align:right">
+            <div class="ticker-value">₹${(r.annual_value_mid/1e7).toFixed(2)}Cr</div>
+            <div class="ticker-time">${new Date(r.created_at).toLocaleDateString()}</div>
+          </div>
+        </div>
+      `).join('')
+    }
+  } catch(err) {
+    console.log('Could not load recent valuations')
+  }
+}
+
+// Load on page load
+setTimeout(() => {
+  loadExampleImpact()
+  loadRecentValuations()
+}, 500)
+</script>
+
+</body>
+</html>

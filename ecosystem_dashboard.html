@@ -1,0 +1,1006 @@
+    transition: all 0.2s;
+  }
+
+  .scenario-card.active {
+    border-color: var(--sage);
+    background: rgba(90, 158, 111, 0.12);
+  }
+
+  .scenario-card:hover { border-color: var(--sage); }
+
+  .scenario-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .scenario-type { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+
+  .scenario-roi {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .roi-positive { color: var(--leaf); }
+  .roi-negative { color: #ef9a9a; }
+  .roi-neutral { color: var(--gold); }
+
+  .scenario-detail { font-size: 11px; color: var(--muted); }
+
+  /* Biodiversity meter */
+  .meter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .meter-track {
+    flex: 1;
+    height: 8px;
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .meter-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  .meter-val { font-size: 11px; color: var(--text); min-width: 30px; text-align: right; }
+
+  /* Footer / sources */
+  .sources-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+
+  .sources-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 12px;
+  }
+
+  .sources-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .source-tag {
+    font-size: 10px;
+    padding: 4px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { animation: fadeUp 0.5s ease forwards; }
+
+  @keyframes countUp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .region-info {
+    font-size: 11px;
+    color: var(--sage);
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  @media (max-width: 900px) {
+    main, header { padding: 24px; }
+    .hero-metrics { grid-template-columns: 1fr 1fr; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .controls-grid { grid-template-columns: 1fr 1fr; }
+    .comparison-grid { grid-template-columns: 1fr; }
+  }
+
+/* ── IMPACT CARDS ── */
+.impact-section { margin-top:40px; margin-bottom:40px; }
+.impact-title { font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--sage); margin-bottom:16px; }
+.impact-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.impact-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; transition:all 0.3s ease; animation:slideIn 0.4s ease forwards; }
+.impact-card:hover { transform:translateY(-3px); border-color:var(--leaf); box-shadow:0 4px 16px rgba(140,201,126,0.1); }
+@keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.impact-icon { font-size:32px; margin-bottom:10px; }
+.impact-metric { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:4px; }
+.impact-label { font-size:12px; color:var(--muted); line-height:1.3; margin-bottom:8px; }
+.impact-source { font-size:10px; color:var(--border); padding-top:8px; border-top:1px solid var(--border); font-family:'JetBrains Mono',monospace; margin-top:8px; }
+
+/* ── LIVE TICKER ── */
+.ticker-section { margin-top:40px; }
+.ticker-container { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.ticker-header { background:var(--card); padding:14px 16px; border-bottom:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--sage); }
+.ticker-list { max-height:300px; overflow-y:auto; }
+.ticker-item { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid rgba(35,61,42,0.3); font-size:11px; animation:slideInLeft 0.3s ease; }
+.ticker-item:last-child { border-bottom:none; }
+@keyframes slideInLeft { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+.ticker-location { font-weight:600; color:var(--leaf); }
+.ticker-meta { color:var(--muted); margin:0 8px; }
+.ticker-value { color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:10px; }
+.ticker-time { color:var(--border); font-size:9px; margin-top:2px; }
+.ticker-empty { padding:24px; text-align:center; color:var(--muted); font-style:italic; font-size:12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">
+    <div class="leaf-icon">🌿</div>
+    <div>
+      <h1>EcoValue India</h1>
+      <div class="subtitle">Ecosystem Services Valuation Engine</div>
+    </div>
+  </div>
+  <div class="data-badge">
+    <span class="badge badge-green">📊 TEEB India</span>
+    <span class="badge badge-green">🌲 FSI ISFR 2023</span>
+    <span class="badge badge-blue">💧 CPCB</span>
+    <span class="badge badge-green">🏛 MoEFCC</span>
+    <span class="badge badge-blue">🔬 TERI</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Controls -->
+  <div class="section-label">▸ Configure Your Land Parcel</div>
+  <div class="controls-grid">
+    <div class="control-group">
+      <label>Ecosystem / Land Type</label>
+      <select id="ecoType">
+        <option value="tropical_moist_forest">Tropical Moist Forest</option>
+        <option value="tropical_dry_forest">Tropical Dry Forest</option>
+        <option value="wetlands_inland" selected>Inland Wetland</option>
+        <option value="mangroves">Mangrove Forest</option>
+        <option value="grasslands_savanna">Grassland / Savanna</option>
+        <option value="agricultural_land">Agricultural Land</option>
+        <option value="himalayan_alpine">Himalayan Alpine</option>
+        <option value="urban_green_spaces">Urban Green Spaces</option>
+        <option value="degraded_land">Degraded / Wasteland</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Land Area (Hectares)</label>
+      <input type="number" id="areaHa" value="100" min="1" max="100000" />
+    </div>
+    <div class="control-group">
+      <label>Region</label>
+      <select id="region">
+        <option value="western_ghats">Western Ghats</option>
+        <option value="northeast_india">Northeast India</option>
+        <option value="sundarbans">Sundarbans</option>
+        <option value="indo_gangetic_plain" selected>Indo-Gangetic Plain</option>
+        <option value="deccan_plateau">Deccan Plateau</option>
+        <option value="rajasthan_arid">Rajasthan / Arid</option>
+        <option value="himalayan_region">Himalayan Region</option>
+        <option value="coastal_regions">Coastal Region</option>
+        <option value="urban_metro">Urban Metro</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Location Name (Optional)</label>
+      <input type="text" id="locationName" placeholder="e.g., Kaziranga NP, Western Ghats Reserve" />
+    </div>
+    <div class="control-group">
+      <label>&nbsp;</label>
+      <button class="calc-btn" onclick="calculate()">⚡ Calculate Value</button>
+    </div>
+  </div>
+
+  <!-- Report Actions -->
+  <div style="display: flex; gap: 16px; margin-bottom: 32px; margin-top: 24px;">
+    <button id="reportBtn" class="calc-btn" onclick="generateReport()" style="background: #0288d1; flex: 1; display: none;">📄 Generate AI Report</button>
+    <button id="pdfBtn" class="calc-btn" onclick="downloadPDF()" style="background: #f9a825; flex: 1; display: none;">📥 Download PDF</button>
+  </div>
+
+  <!-- Report Modal -->
+  <div id="reportModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: #0f1419; border: 1px solid #2a3f35; border-radius: 12px; padding: 32px; max-width: 800px; max-height: 80vh; overflow-y: auto; color: #e8f5e9;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; font-size: 24px; font-family: 'Fraunces', serif;">Policy Brief & Narrative</h2>
+        <button onclick="closeReportModal()" style="background: none; border: none; color: #81c784; font-size: 24px; cursor: pointer;">✕</button>
+      </div>
+      <div id="reportContent" style="font-size: 14px; line-height: 1.6; color: #d0d0d0;"></div>
+    </div>
+  </div>
+
+  <!-- Hero Metrics -->
+  <div class="hero-metrics" id="heroMetrics">
+    <div class="metric-card green fade-up">
+      <div class="metric-icon">🌱</div>
+      <div class="metric-label">Annual Ecosystem Value</div>
+      <div class="metric-value green" id="annualValue">₹5.65 Cr</div>
+      <div class="metric-sub" id="annualPerHa">₹5.65L/ha/yr · 100 ha</div>
+    </div>
+    <div class="metric-card blue fade-up">
+      <div class="metric-icon">📈</div>
+      <div class="metric-label">10-Year NPV (8% discount)</div>
+      <div class="metric-value blue" id="npv10yr">₹37.9 Cr</div>
+      <div class="metric-sub">Net Present Value over decade</div>
+    </div>
+    <div class="metric-card gold fade-up">
+      <div class="metric-icon">☁️</div>
+      <div class="metric-label">Carbon Stored Annually</div>
+      <div class="metric-value gold" id="carbonVal">450 tCO₂</div>
+      <div class="metric-sub" id="carbonInr">₹9.9L carbon value</div>
+    </div>
+    <div class="metric-card warning fade-up">
+      <div class="metric-icon">⚠️</div>
+      <div class="metric-label">Development Opportunity Cost</div>
+      <div class="metric-value red" id="oppCost">-₹32.5 Cr</div>
+      <div class="metric-sub">Ecosystem loss if developed</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Services Breakdown</div>
+      <div class="chart-desc">Annual value contribution by ecosystem service (INR)</div>
+      <div class="chart-wrap">
+        <canvas id="servicesChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">10-Year Scenario Comparison</div>
+      <div class="chart-desc">NPV: Preserve vs Develop vs Restore</div>
+      <div class="chart-wrap">
+        <canvas id="scenarioChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Table -->
+  <div class="services-card">
+    <div class="chart-title">Ecosystem Service Valuation Detail</div>
+    <div class="chart-desc">All values in INR/hectare/year · Sources: TEEB India, FSI ISFR 2023, TERI, MoEFCC</div>
+    <table class="services-table" id="servicesTable">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Value/ha/yr (Min)</th>
+          <th>Value/ha/yr (Mid)</th>
+          <th>Value/ha/yr (Max)</th>
+          <th>Total (Mid) for Your Area</th>
+          <th>Relative Contribution</th>
+          <th>Method</th>
+        </tr>
+      </thead>
+      <tbody id="servicesTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Scenario Cards -->
+  <div class="section-label">▸ Land Use Scenario Comparison</div>
+  <div class="comparison-grid" id="scenarioCards"></div>
+
+  <!-- Indices -->
+  <div class="charts-grid" style="margin-bottom: 40px;">
+    <div class="chart-card">
+      <div class="chart-title">Climate Resilience Index</div>
+      <div class="chart-desc">Contribution to climate adaptation and resilience (0–100)</div>
+      <div id="climateIndex" style="margin-top: 20px;"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Biodiversity Index</div>
+      <div class="chart-desc">Relative habitat quality and species support value (0–100)</div>
+      <div id="bioIndex" style="margin-top: 20px;"></div>
+    </div>
+  </div>
+
+  <!-- Impact Cards -->
+  <div class="impact-section">
+    <div class="impact-title">▸ Human-Scale Impact Metrics</div>
+    <div class="impact-grid" id="impactGrid">
+      <div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:20px;font-size:12px">Select an ecosystem to view impact metrics</div>
+    </div>
+  </div>
+
+  <!-- Live Ticker -->
+  <div class="ticker-section">
+    <div class="impact-title">▸ Session Activity</div>
+    <div class="ticker-container">
+      <div class="ticker-header">📡 Real-Time Valuations</div>
+      <div class="ticker-list" id="tickerList">
+        <div class="ticker-empty">Fetching recent valuations...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sources -->
+  <div class="sources-card">
+    <div class="sources-title">Data Sources & Methodology</div>
+    <div class="sources-list">
+      <span class="source-tag">Sukhdev et al. 2008 — TEEB India</span>
+      <span class="source-tag">FSI ISFR 2023</span>
+      <span class="source-tag">TERI Ecosystem Publications</span>
+      <span class="source-tag">MoEFCC NATCOM UNFCCC</span>
+      <span class="source-tag">IIFM Verma 2000</span>
+      <span class="source-tag">Hussain & Badola 2010</span>
+      <span class="source-tag">CPCB Water Quality</span>
+      <span class="source-tag">ATREE Western Ghats</span>
+      <span class="source-tag">CPR India Urban</span>
+      <span class="source-tag">CACP 2023</span>
+      <span class="source-tag">BEE Carbon Market India</span>
+      <span class="source-tag">CMFRI Fisheries</span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ─── API CONFIG ─────────────────────────────────────────────────────────────
+const BASE_API = "http://localhost:8000/api/v1";
+let lastRequest = null; // Store request for report generation
+
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const DATA = {
+  ecosystems: {
+    tropical_moist_forest: {
+      name: "Tropical Moist Forest",
+      regions: "Western Ghats, Northeast India",
+      services: {
+        carbon_sequestration: { min: 45000, mid: 82500, max: 120000, method: "Social cost × 4.5–8 tCO2/ha/yr" },
+        water_regulation: { min: 35000, mid: 65000, max: 95000, method: "Replacement cost" },
+        flood_control: { min: 55000, mid: 107500, max: 160000, method: "Avoided damage cost" },
+        biodiversity_habitat: { min: 80000, mid: 165000, max: 250000, method: "WTP surveys + species index" },
+        pollination: { min: 12000, mid: 28500, max: 45000, method: "Crop value × dependency ratio" },
+        soil_formation: { min: 8000, mid: 16500, max: 25000, method: "Replacement cost" },
+        recreation_tourism: { min: 15000, mid: 37500, max: 60000, method: "Travel cost + visitor spend" },
+        timber_nwfp: { min: 20000, mid: 47500, max: 75000, method: "Market price" }
+      },
+      carbon_rate: 6, climate_score: 92, bio_index: 95
+    },
+    tropical_dry_forest: {
+      name: "Tropical Dry Forest",
+      regions: "Madhya Pradesh, Maharashtra, Odisha",
+      services: {
+        carbon_sequestration: { min: 25000, mid: 47500, max: 70000, method: "Social cost × 2.5–5 tCO2/ha/yr" },
+        water_regulation: { min: 18000, mid: 36500, max: 55000, method: "Replacement cost" },
+        flood_control: { min: 30000, mid: 60000, max: 90000, method: "Avoided damage cost" },
+        biodiversity_habitat: { min: 35000, mid: 72500, max: 110000, method: "WTP surveys" },
+        pollination: { min: 8000, mid: 19000, max: 30000, method: "Crop value × dependency ratio" },
+        soil_formation: { min: 5000, mid: 11500, max: 18000, method: "Replacement cost" },
+        recreation_tourism: { min: 8000, mid: 21500, max: 35000, method: "Travel cost" },
+        timber_nwfp: { min: 25000, mid: 52500, max: 80000, method: "Market price" }
+      },
+      carbon_rate: 3.75, climate_score: 78, bio_index: 78
+    },
+    wetlands_inland: {
+      name: "Inland Wetlands",
+      regions: "Chilika, Loktak, Indo-Gangetic Floodplains",
+      services: {
+        flood_control: { min: 80000, mid: 165000, max: 250000, method: "Avoided damage cost" },
+        water_filtration: { min: 40000, mid: 70000, max: 100000, method: "Replacement cost of treatment" },
+        carbon_sequestration: { min: 30000, mid: 57500, max: 85000, method: "Social cost × 3–6.5 tCO2/ha/yr" },
+        biodiversity_habitat: { min: 55000, mid: 117500, max: 180000, method: "WTP + bird tourism" },
+        fisheries: { min: 35000, mid: 77500, max: 120000, method: "Market price method" },
+        groundwater_recharge: { min: 20000, mid: 42500, max: 65000, method: "Replacement cost" },
+        recreation_tourism: { min: 15000, mid: 35000, max: 55000, method: "Travel cost" }
+      },
+      carbon_rate: 4.75, climate_score: 88, bio_index: 82
+    },
+    mangroves: {
+      name: "Mangrove Forests",
+      regions: "Sundarbans, Gujarat, Odisha Coast",
+      services: {
+        coastal_protection: { min: 150000, mid: 325000, max: 500000, method: "Avoided storm/cyclone damage" },
+        carbon_sequestration: { min: 70000, mid: 135000, max: 200000, method: "Blue carbon × 6–12 tCO2/ha/yr" },
+        fisheries_nursery: { min: 80000, mid: 165000, max: 250000, method: "Market value dependent fish" },
+        biodiversity_habitat: { min: 90000, mid: 185000, max: 280000, method: "WTP studies" },
+        water_filtration: { min: 30000, mid: 60000, max: 90000, method: "Replacement cost" },
+        timber_nwfp: { min: 15000, mid: 32500, max: 50000, method: "Market price" }
+      },
+      carbon_rate: 9, climate_score: 95, bio_index: 88
+    },
+    grasslands_savanna: {
+      name: "Grasslands & Savannas",
+      regions: "Deccan Plateau, Rajasthan, Gujarat",
+      services: {
+        carbon_sequestration: { min: 8000, mid: 19000, max: 30000, method: "Social cost × 1–2.5 tCO2/ha/yr" },
+        biodiversity_habitat: { min: 10000, mid: 25000, max: 40000, method: "WTP surveys" },
+        grazing_livestock: { min: 12000, mid: 28500, max: 45000, method: "Market value livestock" },
+        pollination: { min: 5000, mid: 12500, max: 20000, method: "Crop dependency ratio" },
+        soil_formation: { min: 3000, mid: 7500, max: 12000, method: "Replacement cost" },
+        water_regulation: { min: 6000, mid: 14000, max: 22000, method: "Replacement cost" }
+      },
+      carbon_rate: 1.75, climate_score: 60, bio_index: 55
+    },
+    agricultural_land: {
+      name: "Agricultural Land (Traditional)",
+      regions: "Indo-Gangetic Plain, Deccan, Deltas",
+      services: {
+        food_production: { min: 40000, mid: 95000, max: 150000, method: "Net farm income" },
+        pollination: { min: 15000, mid: 37500, max: 60000, method: "Crop value × dependency 0.3" },
+        carbon_sequestration: { min: 3000, mid: 7500, max: 12000, method: "Social cost × 0.3–1 tCO2/ha/yr" },
+        soil_formation: { min: 5000, mid: 11500, max: 18000, method: "Replacement cost" },
+        cultural_value: { min: 5000, mid: 12500, max: 20000, method: "Rural livelihood proxy" }
+      },
+      carbon_rate: 0.65, climate_score: 35, bio_index: 30
+    },
+    himalayan_alpine: {
+      name: "Himalayan Alpine Ecosystems",
+      regions: "Uttarakhand, Himachal Pradesh, Sikkim",
+      services: {
+        water_supply: { min: 60000, mid: 130000, max: 200000, method: "Downstream river water value" },
+        carbon_sequestration: { min: 20000, mid: 42500, max: 65000, method: "Social cost estimates" },
+        biodiversity_habitat: { min: 50000, mid: 112500, max: 175000, method: "WTP + endemic species" },
+        climate_regulation: { min: 40000, mid: 85000, max: 130000, method: "Glacier value + albedo" },
+        tourism_recreation: { min: 25000, mid: 57500, max: 90000, method: "Visitor spend + travel cost" },
+        medicinal_plants: { min: 10000, mid: 25000, max: 40000, method: "Market + cultural value" }
+      },
+      carbon_rate: 3.5, climate_score: 85, bio_index: 90
+    },
+    urban_green_spaces: {
+      name: "Urban Green Spaces",
+      regions: "Delhi, Mumbai, Bengaluru, Chennai",
+      services: {
+        air_purification: { min: 25000, mid: 57500, max: 90000, method: "Health cost savings PM2.5/NO2" },
+        urban_heat_mitigation: { min: 20000, mid: 45000, max: 70000, method: "Energy savings + health" },
+        flood_control: { min: 30000, mid: 65000, max: 100000, method: "Avoided stormwater infra cost" },
+        recreation_wellbeing: { min: 15000, mid: 35000, max: 55000, method: "Hedonic pricing + WTP" },
+        carbon_sequestration: { min: 5000, mid: 12500, max: 20000, method: "Urban tree cover rates" },
+        noise_reduction: { min: 8000, mid: 16500, max: 25000, method: "Hedonic property premium" }
+      },
+      carbon_rate: 1, climate_score: 55, bio_index: 35
+    },
+    degraded_land: {
+      name: "Degraded / Wasteland",
+      regions: "Chambal Ravines, Mining Areas",
+      services: {
+        carbon_sequestration: { min: 500, mid: 1750, max: 3000, method: "Minimal vegetation cover" },
+        biodiversity_habitat: { min: 500, mid: 2750, max: 5000, method: "Low species richness" },
+        soil_erosion_cost: { min: -8000, mid: -5000, max: -1000, method: "Negative — net erosion loss" }
+      },
+      carbon_rate: 0.1, climate_score: 5, bio_index: 5
+    }
+  },
+  regional_multipliers: {
+    western_ghats: 1.4, northeast_india: 1.35, sundarbans: 1.5,
+    indo_gangetic_plain: 0.9, deccan_plateau: 0.85, rajasthan_arid: 0.6,
+    himalayan_region: 1.3, coastal_regions: 1.2, urban_metro: 1.6
+  },
+  land_use_alternatives: {
+    preserve: { name: "Preserve / Conserve", revenue_ha_yr: 55000, eco_retain: 0.95, color: "#5a9e6f" },
+    restore: { name: "Rewild / Restore", revenue_ha_yr: 40000, eco_gain: 0.65, color: "#8cc97e" },
+    solar: { name: "Solar Farm", revenue_ha_yr: 260000, eco_retain: 0.4, color: "#f9a825" },
+    agriculture: { name: "Intensive Agriculture", revenue_ha_yr: 110000, eco_retain: 0.6, color: "#a0522d" },
+    development: { name: "Urban Development", revenue_ha_yr: 800000, eco_retain: 0.15, color: "#ef5350" },
+    industrial: { name: "Industrial Zone", revenue_ha_yr: 700000, eco_retain: 0.1, color: "#b71c1c" }
+  }
+};
+
+// ─── CHARTS ─────────────────────────────────────────────────────────────────
+let servicesChart, scenarioChart;
+
+function formatCrore(n) {
+  if (Math.abs(n) >= 1e7) return "₹" + (n/1e7).toFixed(2) + " Cr";
+  if (Math.abs(n) >= 1e5) return "₹" + (n/1e5).toFixed(2) + " L";
+  return "₹" + Math.round(n).toLocaleString('en-IN');
+}
+
+async function calculate() {
+  const ecoKey = document.getElementById('ecoType').value;
+  const area = parseFloat(document.getElementById('areaHa').value) || 100;
+  const region = document.getElementById('region').value;
+  const locationName = document.getElementById('locationName').value || null;
+
+  // Build request for API
+  const req = {
+    ecosystem_type: ecoKey,
+    area_hectares: area,
+    region: region,
+    carbon_pricing: "voluntary_market",
+    value_type: "midpoint",
+    projection_years: 10,
+    location_name: locationName
+  };
+
+  lastRequest = req; // Save for report generation
+
+  try {
+    // Call API endpoints in parallel
+    const [valRes, scnRes] = await Promise.all([
+      fetch(`${BASE_API}/valuate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(req)
+      }).then(r => {
+        if (!r.ok) throw new Error(`API Error: ${r.status}`);
+        return r.json();
+      }),
+
+      fetch(`${BASE_API}/scenarios/compare`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...req,
+          scenarios: ["preserve", "restore", "solar", "agriculture", "development", "industrial"]
+        })
+      }).then(r => {
+        if (!r.ok) throw new Error(`API Error: ${r.status}`);
+        return r.json();
+      })
+    ]);
+
+    renderDashboard(valRes, scnRes);
+    // Show report buttons on successful calculation
+    document.getElementById('reportBtn').style.display = 'block';
+    document.getElementById('pdfBtn').style.display = 'block';
+  } catch (error) {
+    console.error('API Error:', error);
+    alert('Error fetching valuation data: ' + error.message);
+  }
+}
+
+function renderDashboard(valRes, scnRes) {
+  // valRes: { annual_value, npv_10yr, carbon_annual, carbon_value, opportunity_cost, services: {...}, indices: {...} }
+  // scnRes: { scenarios: [{name, roi, eco_npv, revenue_npv, ecosystem_retention}, ...] }
+
+  const annualTotal = valRes.annual_value || 0;
+  const npv10 = valRes.npv_10yr || 0;
+  const carbonAnnual = valRes.carbon_annual || 0;
+  const carbonInr = valRes.carbon_value || 0;
+  const oppCost = valRes.opportunity_cost || 0;
+
+  // Update hero metrics
+  document.getElementById('annualValue').textContent = formatCrore(annualTotal);
+  document.getElementById('annualPerHa').textContent = `₹${Math.round(annualTotal / (lastRequest?.area_hectares || 100)).toLocaleString('en-IN')}/ha/yr · ${lastRequest?.area_hectares || 100} ha`;
+  document.getElementById('npv10yr').textContent = formatCrore(npv10);
+  document.getElementById('carbonVal').textContent = Math.round(carbonAnnual) + " tCO₂";
+  document.getElementById('carbonInr').textContent = formatCrore(carbonInr) + " carbon value";
+  document.getElementById('oppCost').textContent = "-" + formatCrore(oppCost);
+
+  // Render services from API response
+  if (valRes.services) {
+    renderTableFromAPI(valRes.services);
+  }
+
+  // Charts from API data
+  renderServicesChartFromAPI(valRes.services, lastRequest?.area_hectares || 100);
+  
+  // Scenario comparison
+  if (scnRes.scenarios && scnRes.scenarios.length > 0) {
+    renderScenarioChartFromAPI(scnRes.scenarios);
+    renderScenariosCardsFromAPI(scnRes.scenarios);
+  }
+
+  // Indices
+  if (valRes.indices) {
+    renderIndex('climateIndex', 'Climate Resilience Score', valRes.indices.climate_score || 50, '#1565c0', '#0288d1');
+    renderIndex('bioIndex', 'Biodiversity Index', valRes.indices.biodiversity_index || 50, '#2d7a4f', '#8cc97e');
+  }
+}
+
+function renderTableFromAPI(services) {
+  const tbody = document.getElementById('servicesTableBody');
+  const totalValue = Object.values(services).reduce((sum, s) => sum + (s.value_midpoint || 0), 0);
+  
+  const rows = Object.entries(services).map(([key, s]) => {
+    const value = s.value_midpoint || 0;
+    const pct = totalValue > 0 ? (value / totalValue) * 100 : 0;
+    const barW = Math.max(0, Math.min(100, pct));
+    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return `<tr>
+      <td style="font-weight:500">${label}</td>
+      <td style="color:#81c784">₹${Math.round(s.value_min || 0).toLocaleString('en-IN')}</td>
+      <td style="color:#e8f5e9;font-weight:500">₹${Math.round(value).toLocaleString('en-IN')}</td>
+      <td style="color:#a5d6a7">₹${Math.round(s.value_max || 0).toLocaleString('en-IN')}</td>
+      <td style="color:#8cc97e;font-weight:500">${formatCrore(s.total_value || 0)}</td>
+      <td>
+        <span class="service-bar" style="width:${barW}px;background:linear-gradient(90deg,#2d7a4f,#8cc97e)"></span>
+        <span style="font-size:11px;color:#81c784">${pct.toFixed(1)}%</span>
+      </td>
+      <td style="font-size:10px;color:#81c784">${s.method || '—'}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = rows.join('');
+}
+
+function renderServicesChartFromAPI(services, area) {
+  const labels = Object.keys(services).map(k => k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+  const values = Object.values(services).map(s => Math.round((s.total_value || 0) / 1e5) / 10);
+
+  if (servicesChart) servicesChart.destroy();
+  const ctx = document.getElementById('servicesChart').getContext('2d');
+  servicesChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: values.map((v, i) => {
+          const colors = ['#2d7a4f','#5a9e6f','#8cc97e','#0288d1','#1565c0','#f9a825','#a0522d','#e65100','#4caf50'];
+          return colors[i % colors.length] + 'cc';
+        }),
+        borderColor: '#1a5c3a',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => `₹${ctx.raw.toFixed(1)} L` }
+      }},
+      scales: {
+        x: { ticks: { color: '#81c784', font: { size: 10 }, maxRotation: 45 }, grid: { color: '#1a3325' } },
+        y: { ticks: { color: '#81c784', font: { size: 10 }, callback: v => '₹' + v + 'L' }, grid: { color: '#1a3325' } }
+      }
+    }
+  });
+}
+
+function renderScenarioChartFromAPI(scenarios) {
+  const labels = scenarios.map(s => s.scenario_name || s.name);
+  const ecoNPVs = scenarios.map(s => (s.ecosystem_npv || 0) / 1e7);
+  const revNPVs = scenarios.map(s => (s.revenue_npv || 0) / 1e7);
+
+  if (scenarioChart) scenarioChart.destroy();
+  const ctx = document.getElementById('scenarioChart').getContext('2d');
+  scenarioChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ecosystem NPV (₹Cr)', data: ecoNPVs, backgroundColor: '#5a9e6fcc', borderRadius: 4 },
+        { label: 'Direct Revenue NPV (₹Cr)', data: revNPVs, backgroundColor: '#f9a825aa', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#81c784', font: { size: 10 } } },
+        tooltip: { callbacks: { label: ctx => `₹${(ctx.raw * 10).toFixed(1)} L` } }
+      },
+      scales: {
+        x: { ticks: { color: '#81c784', font: { size: 9 }, maxRotation: 30 }, grid: { color: '#1a3325' } },
+        y: { ticks: { color: '#81c784', font: { size: 10 }, callback: v => '₹'+(v*10).toFixed(0)+'L' }, grid: { color: '#1a3325' } }
+      }
+    }
+  });
+}
+
+function renderScenariosCardsFromAPI(scenarios) {
+  const html = scenarios.map(s => {
+    const totalNPV = (s.ecosystem_npv || 0) + (s.revenue_npv || 0);
+    const roiClass = totalNPV > 0 ? 'roi-positive' : s.scenario_name?.includes('Preserve') ? 'roi-neutral' : 'roi-negative';
+    const ecoLoss = Math.max(0, (1 - (s.ecosystem_retention || 0.5)) * 100);
+
+    return `<div class="scenario-card">
+      <div class="scenario-name">${s.scenario_name || s.name}</div>
+      <div class="scenario-type">10-yr combined NPV</div>
+      <div class="scenario-roi ${roiClass}">${formatCrore(totalNPV)}</div>
+      <div class="scenario-detail" style="margin-top:8px">
+        <span style="color:#8cc97e">🌿 Eco: ${formatCrore(s.ecosystem_npv || 0)}</span> &nbsp;
+        <span style="color:#f9a825">💰 Rev: ${formatCrore(s.revenue_npv || 0)}</span>
+      </div>
+      <div class="scenario-detail" style="margin-top:6px;color:${ecoLoss > 50 ? '#ef9a9a':'#81c784'}">
+        ${ecoLoss > 0 ? `⚠ ${ecoLoss.toFixed(0)}% ecosystem loss` : `✓ ${Math.round((s.ecosystem_retention || 0.5)*100)}% services retained`}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('scenarioCards').innerHTML = html.join('');
+}
+
+async function generateReport() {
+  if (!lastRequest) {
+    alert('Please calculate valuation first');
+    return;
+  }
+
+  try {
+    document.getElementById('reportContent').innerHTML = '<p style="color: #81c784;">⟳ Generating policy brief...</p>';
+    
+    const res = await fetch(`${BASE_API}/report/narrative`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lastRequest)
+    });
+
+    if (!res.ok) throw new Error(`API Error: ${res.status}`);
+    const data = await res.json();
+
+    // Format narrative with sections
+    const narrative = data.narrative || data.policy_brief || 'No narrative generated';
+    const formattedNarrative = narrative
+      .split('\n\n')
+      .map(para => `<p>${para}</p>`)
+      .join('');
+
+    document.getElementById('reportContent').innerHTML = formattedNarrative;
+    document.getElementById('reportModal').style.display = 'flex';
+  } catch (error) {
+    console.error('Report Error:', error);
+    document.getElementById('reportContent').innerHTML = `<p style="color: #ef5350;">Error: ${error.message}</p>`;
+  }
+}
+
+function closeReportModal() {
+  document.getElementById('reportModal').style.display = 'none';
+}
+
+async function downloadPDF() {
+  if (!lastRequest) {
+    alert('Please calculate valuation first');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${BASE_API}/report/pdf/download`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lastRequest)
+    });
+
+    if (!res.ok) throw new Error(`API Error: ${res.status}`);
+    
+    // Handle PDF download
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `valuation-${lastRequest.location_name || lastRequest.ecosystem_type}-${new Date().toISOString().split('T')[0]}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  } catch (error) {
+    console.error('PDF Error:', error);
+    alert('Error downloading PDF: ' + error.message);
+  }
+}
+
+function renderTable(eco, area, multiplier, totalMid) {
+  const tbody = document.getElementById('servicesTableBody');
+  const rows = Object.entries(eco.services).map(([key, s]) => {
+    const adjMid = (s.mid || 0) * multiplier;
+    const totalForArea = adjMid * area;
+    const pct = totalMid > 0 ? (adjMid / totalMid) * 100 : 0;
+    const barW = Math.max(0, Math.min(100, pct));
+    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return `<tr>
+      <td style="font-weight:500">${label}</td>
+      <td style="color:#81c784">₹${Math.round((s.min||0)*multiplier).toLocaleString('en-IN')}</td>
+      <td style="color:#e8f5e9;font-weight:500">₹${Math.round(adjMid).toLocaleString('en-IN')}</td>
+      <td style="color:#a5d6a7">₹${Math.round((s.max||0)*multiplier).toLocaleString('en-IN')}</td>
+      <td style="color:#8cc97e;font-weight:500">${formatCrore(totalForArea)}</td>
+      <td>
+        <span class="service-bar" style="width:${barW}px;background:linear-gradient(90deg,#2d7a4f,#8cc97e)"></span>
+        <span style="font-size:11px;color:#81c784">${pct.toFixed(1)}%</span>
+      </td>
+      <td style="font-size:10px;color:#81c784">${s.method || '—'}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = rows.join('');
+}
+
+function renderServicesChart(eco, multiplier, area) {
+  const labels = Object.keys(eco.services).map(k => k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+  const values = Object.values(eco.services).map(s => Math.round((s.mid || 0) * multiplier * area / 1e5) / 10);
+
+  if (servicesChart) servicesChart.destroy();
+  const ctx = document.getElementById('servicesChart').getContext('2d');
+  servicesChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: values.map((v, i) => {
+          const colors = ['#2d7a4f','#5a9e6f','#8cc97e','#0288d1','#1565c0','#f9a825','#a0522d','#e65100','#4caf50'];
+          return colors[i % colors.length] + 'cc';
+        }),
+        borderColor: '#1a5c3a',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => `₹${ctx.raw.toFixed(1)} L` }
+      }},
+      scales: {
+        x: { ticks: { color: '#81c784', font: { size: 10 }, maxRotation: 45 }, grid: { color: '#1a3325' } },
+        y: { ticks: { color: '#81c784', font: { size: 10 }, callback: v => '₹' + v + 'L' }, grid: { color: '#1a3325' } }
+      }
+    }
+  });
+}
+
+function renderScenarioChart(eco, area, multiplier) {
+  const baseAnnual = Object.values(eco.services).reduce((a, s) => a + (s.mid || 0), 0) * multiplier * area;
+  const pvFactor = 6.71;
+
+  const scenarios = ['preserve','restore','solar','agriculture','development','industrial'];
+  const labels = scenarios.map(k => DATA.land_use_alternatives[k].name);
+
+  const ecoNPVs = scenarios.map(k => {
+    const alt = DATA.land_use_alternatives[k];
+    const retain = alt.eco_retain || alt.eco_gain || 0.5;
+    return Math.round(baseAnnual * retain * pvFactor / 1e7 * 10) / 10;
+  });
+
+  const revNPVs = scenarios.map(k => {
+    const alt = DATA.land_use_alternatives[k];
+    return Math.round(alt.revenue_ha_yr * area * pvFactor / 1e7 * 10) / 10;
+  });
+
+  if (scenarioChart) scenarioChart.destroy();
+  const ctx = document.getElementById('scenarioChart').getContext('2d');
+  scenarioChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ecosystem NPV (₹Cr)', data: ecoNPVs, backgroundColor: '#5a9e6fcc', borderRadius: 4 },
+        { label: 'Direct Revenue NPV (₹Cr)', data: revNPVs, backgroundColor: '#f9a825aa', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#81c784', font: { size: 10 } } },
+        tooltip: { callbacks: { label: ctx => `₹${ctx.raw} Cr` } }
+      },
+      scales: {
+        x: { ticks: { color: '#81c784', font: { size: 9 }, maxRotation: 30 }, grid: { color: '#1a3325' } },
+        y: { ticks: { color: '#81c784', font: { size: 10 }, callback: v => '₹'+v+'Cr' }, grid: { color: '#1a3325' } }
+      }
+    }
+  });
+}
+
+function renderScenarios(eco, area, multiplier, totalMidPerHa) {
+  const baseAnnual = totalMidPerHa * multiplier * area;
+  const pvFactor = 6.71;
+
+  const scenarioKeys = ['preserve','restore','solar','development','agriculture','industrial'];
+  const html = scenarioKeys.map(k => {
+    const alt = DATA.land_use_alternatives[k];
+    const retain = alt.eco_retain || alt.eco_gain || 0.5;
+    const ecoNPV = baseAnnual * retain * pvFactor;
+    const revNPV = alt.revenue_ha_yr * area * pvFactor;
+    const totalNPV = ecoNPV + revNPV;
+    const roiClass = totalNPV > baseAnnual * pvFactor ? 'roi-positive' : (k === 'restore' ? 'roi-neutral' : 'roi-negative');
+    const ecoLoss = (1 - retain) * 100;
+
+    return `<div class="scenario-card">
+      <div class="scenario-name">${alt.name}</div>
+      <div class="scenario-type">10-yr combined NPV</div>
+      <div class="scenario-roi ${roiClass}">${formatCrore(totalNPV)}</div>
+      <div class="scenario-detail" style="margin-top:8px">
+        <span style="color:#8cc97e">🌿 Eco: ${formatCrore(ecoNPV)}</span> &nbsp;
+        <span style="color:#f9a825">💰 Rev: ${formatCrore(revNPV)}</span>
+      </div>
+      <div class="scenario-detail" style="margin-top:6px;color:${ecoLoss > 50 ? '#ef9a9a':'#81c784'}">
+        ${ecoLoss > 0 ? `⚠ ${ecoLoss.toFixed(0)}% ecosystem loss` : `✓ ${Math.round(retain*100)}% services retained`}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('scenarioCards').innerHTML = html.join('');
+}
+
+function renderIndex(containerId, label, score, colorStart, colorEnd) {
+  const el = document.getElementById(containerId);
+  const color = score > 70 ? '#5a9e6f' : score > 40 ? '#f9a825' : '#ef5350';
+  el.innerHTML = `
+    <div style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:13px;font-family:'Syne',sans-serif;font-weight:700">${label}</span>
+        <span style="font-size:22px;font-family:'Syne',sans-serif;font-weight:800;color:${color}">${score}/100</span>
+      </div>
+      <div class="meter-track" style="height:12px;border-radius:6px">
+        <div class="meter-fill" style="width:${score}%;background:linear-gradient(90deg,${colorStart},${colorEnd})"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderIndices(eco) {
+  renderIndex('climateIndex', 'Climate Resilience Score', eco.climate_score, '#1565c0', '#0288d1');
+  renderIndex('bioIndex', 'Biodiversity Index', eco.bio_index, '#2d7a4f', '#8cc97e');
+}
+
+// Initial render
+calculate();
+
+// ── IMPACT METRICS & TICKER ──────────────────────────────────────────────────
+const BASE = 'http://localhost:8000'
+
+async function loadImpactCards(ecoType, areaHa) {
+  try {
+    const res = await fetch(`${BASE}/api/v1/impact`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        ecosystem_name: ecoType,
+        area_hectares: areaHa,
+        annual_value_mid: 5000000,
+        carbon_annual_tonnes: 500,
+        biodiversity_index: 80
+      })
+    }).then(r => r.json())
+
+    const grid = document.getElementById('impactGrid')
+    grid.innerHTML = res.map(card => `
+      <div class="impact-card">
+        <div class="impact-icon">${card.icon}</div>
+        <div class="impact-metric">${card.metric}</div>
+        <div class="impact-label">${card.label}</div>
+        <div class="impact-source">${card.source}</div>
+      </div>
+    `).join('')
+  } catch(err) {
+    console.log('Could not load impact metrics')
+  }
+}
+
+async function loadRecentValuations() {
+  try {
+    const res = await fetch(`${BASE}/api/v1/history?limit=5`)
+    if (res.ok) {
+      const data = await res.json()
+      const list = document.getElementById('tickerList')
+      list.innerHTML = data.results.slice(0, 5).map(r => `
+        <div class="ticker-item">
+          <div>
+            <div class="ticker-location">${r.location_name || r.ecosystem_name}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">${r.area_hectares} ha</div>
+          </div>
+          <div style="text-align:right">
+            <div class="ticker-value">₹${formatCrore(r.annual_value_mid)}</div>
+            <div class="ticker-time">${new Date(r.created_at).toLocaleDateString()}</div>
+          </div>
+        </div>
+      `).join('')
+    }
+  } catch(err) {
+    console.log('Could not load recent valuations')
+  }
+}
+
+// Load impact and ticker on ecosystem selection
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'ecosystemSelect') {
+    const selected = e.target.value
+    loadImpactCards(selected, 100)
+    loadRecentValuations()
+  }
+})
+
+// Initial load
+setTimeout(() => {
+  loadImpactCards('tropical_moist_forest', 100)
+  loadRecentValuations()
+}, 1000);
+</script>
+</body>
+</html>
