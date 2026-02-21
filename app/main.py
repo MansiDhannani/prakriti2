@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from app.routers import valuation, report, scenarios, health, analytics, live
 
 # ── LOAD ENV VARIABLES (including GROQ_API_KEY) ──────────────────────────────
@@ -50,6 +52,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount static files so the browser can fetch your CSS and JS
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(health.router,      tags=["Health"])
 app.include_router(valuation.router,   prefix="/api/v1", tags=["Valuation"])
@@ -118,8 +123,6 @@ app.include_router(rag_router)
 
 
 # ── Serve HTML files ──────────────────────────────────────────────────────────
-from fastapi.responses import FileResponse
-
 @app.get("/live")
 @app.get("/live.html")
 async def serve_live_dashboard():
