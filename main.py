@@ -70,9 +70,43 @@ if os.path.exists(CSV_PATH):
 else:
     df_parcels = pd.DataFrame()
 
+# Helper to get absolute path to HTML files
+def get_html_path(filename: str):
+    return os.path.join(os.path.dirname(__file__), filename)
+
 @app.get("/")
 async def serve_frontend():
-    return FileResponse("index.html")
+    return FileResponse(get_html_path("index.html"))
+
+@app.get("/index")
+@app.get("/index.html")
+async def serve_index():
+    return FileResponse(get_html_path("index.html"))
+
+@app.get("/dashboard")
+@app.get("/dashboard.html")
+async def serve_dashboard():
+    return FileResponse(get_html_path("dashboard.html"))
+
+@app.get("/history")
+@app.get("/history.html")
+async def serve_history():
+    return FileResponse(get_html_path("history.html"))
+
+@app.get("/about")
+@app.get("/about.html")
+async def serve_about():
+    return FileResponse(get_html_path("about.html"))
+
+@app.get("/live")
+@app.get("/live.html")
+async def serve_live():
+    return FileResponse(get_html_path("live.html"))
+
+@app.get("/ecosystem_dashboard")
+@app.get("/ecosystem_dashboard.html")
+async def serve_eco_dashboard():
+    return FileResponse(get_html_path("ecosystem_dashboard.html"))
 
 @app.get("/health")
 def health_check():
