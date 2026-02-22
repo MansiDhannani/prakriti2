@@ -66,8 +66,10 @@ app.include_router(live.router,        prefix="/api/v1", tags=["Live & Impact"])
 
 
 @app.get("/")
-async def root():
-    return {"message": "Welcome to EcoValue India API v2.0.0"}
+async def serve_root():
+    """Serve the landing page at the root URL"""
+    html_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "index.html")
+    return FileResponse(html_path, media_type="text/html")
 
 
 # ── RAG admin endpoints ───────────────────────────────────────────────────────

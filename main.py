@@ -71,8 +71,8 @@ else:
     df_parcels = pd.DataFrame()
 
 @app.get("/")
-async def root():
-    return {"message": "Welcome to EcoValue India API v2.0.0"}
+async def serve_frontend():
+    return FileResponse("index.html")
 
 @app.get("/health")
 def health_check():
