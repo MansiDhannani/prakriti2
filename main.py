@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from typing import Optional
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, Response
@@ -22,6 +23,12 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Check for API Key
+    if os.getenv("GROQ_API_KEY"):
+        print("✅ GROQ_API_KEY found in environment")
+    else:
+        print("❌ GROQ_API_KEY NOT found. AI features will be disabled.")
+
     # Pre-load RAG index on startup
     try:
         from app.services.rag_service import get_store
