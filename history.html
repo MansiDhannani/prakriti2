@@ -178,7 +178,7 @@ body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text);
 </div>
 
 <script>
-const BASE = "http://localhost:8000"
+const BASE = window.location.origin
 
 function fmt(n) {
   if (!n && n !== 0) return '—'

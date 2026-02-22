@@ -11,7 +11,7 @@ import os
 
 # Import Version 2.0.0 Services
 from app.services import valuation_engine, narrative_service, pdf_service, db_service, rag_service
-from app.models.schemas import ValuationRequest, ScenarioCompareRequest
+from app.models.schemas import ValuationRequest, ScenarioCompareRequest, NarrativeRequest
 from app.models.database import SessionLocal, engine, Base
 from live import router as live_router
 
@@ -130,14 +130,14 @@ def compare_scenarios(request: ScenarioCompareRequest):
     return valuation_engine.compute_scenario_comparison(request)
 
 @app.post("/api/v1/report/narrative")
-def generate_narrative(request: dict):
-    # Expects {"valuation_result": {...}, "location_name": "..."}
+def generate_narrative(request: NarrativeRequest):
     return narrative_service.generate_narrative(
-        valuation_result=request.get("valuation_result"),
-        location_name=request.get("location_name")
+        valuation_result=request.valuation_result,
+        scenario_results=request.scenario_results,
+        location_name=request.location_name
     )
 
-@app.post("/api/v1/report/pdf")
+@app.post("/api/v1/report/pdf/download")
 def generate_pdf_report(request: dict):
     pdf_bytes, filename = pdf_service.generate_pdf(
         valuation_result=request.get("valuation_result"),
@@ -151,25 +151,23 @@ def generate_pdf_report(request: dict):
     )
 
 @app.get("/api/v1/history")
-def get_history(db: Session = Depends(get_db)):
-    return {"valuations": db_service.list_valuations(db)}
+def get_history(
+    ecosystem_type: Optional[str] = None,
+    region: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+    db: Session = Depends(get_db)
+):
+    results = db_service.list_valuations(db, ecosystem_type, region, limit, offset)
+    return {
+        "results": results,
+        "total": len(results),
+        "valuations": results  # Support both frontend formats
+    }
 
 @app.get("/api/v1/analytics")
 def get_analytics(db: Session = Depends(get_db)):
     return db_service.get_analytics(db)
-
-@app.post("/api/v1/impact")
-def get_impact(valuation_result: dict):
-    from app.services.impact_service import calculate_impact
-    return calculate_impact(
-        ecosystem_type=valuation_result.get("ecosystem_type"),
-        area_hectares=valuation_result.get("area_hectares"),
-        annual_value_inr=valuation_result.get("annual_value_mid"),
-        carbon_tonnes_yr=valuation_result.get("carbon_annual_tonnes"),
-        biodiversity_index=valuation_result.get("biodiversity_index"),
-        climate_score=valuation_result.get("climate_resilience_score"),
-        services=valuation_result.get("services")
-    )
 
 @app.get("/api/v1/rag/search")
 def rag_search(q: str = Query(..., description="Search query for ecosystem data")):
@@ -181,12 +179,31 @@ def rag_rebuild():
     count = rag_service.build_index(store)
     return {"status": "success", "documents_indexed": count}
 
+@app.get("/api/v1/rag/stats")
+def rag_stats():
+    store = rag_service.get_store()
+    return {"total_documents": store.count(), "index_path": "data/rag_index.json"}
+
 # Include WebSocket Ticker
 app.include_router(live_router, prefix="/api/v1")
 
 @app.get("/api/v1/parcels")
 def list_parcels():
     return df_parcels[["Parcel_ID", "State", "Land_Use_Type"]].to_dict(orient="records")
+
+@app.get("/api/v1/parcel/{parcel_id}")
+def get_parcel(parcel_id: int):
+    if df_parcels.empty:
+        raise HTTPException(status_code=404, detail="Parcel dataset not loaded")
+    result = df_parcels[df_parcels["Parcel_ID"] == parcel_id]
+    if result.empty:
+        raise HTTPException(status_code=404, detail="Parcel not found")
+    return result.iloc[0].to_dict()
+
+@app.get("/api/v1/regions")
+def get_regions():
+    from app.data.coefficients import REGIONAL_MULTIPLIERS
+    return REGIONAL_MULTIPLIERS
 
 if __name__ == "__main__":
     import uvicorn

@@ -353,7 +353,7 @@
 </div>
 
 <script>
-const BASE_API = "http://localhost:8000";
+const BASE_API = window.location.origin;
 let ws = null;
 let currentImpactData = null;
 
@@ -375,7 +375,8 @@ function checkAPI() {
 // ── WebSocket Connection ────────────────────────────────────────────────────
 function connectWebSocket() {
   try {
-    ws = new WebSocket(`ws://localhost:8000/api/v1/ws/ticker`);
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${protocol}//${window.location.host}/api/v1/ws/ticker`);
     
     ws.onmessage = (e) => {
       const msg = JSON.parse(e.data);
